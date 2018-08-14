@@ -1,1 +1,1 @@
-# projext-X
+# project-X
