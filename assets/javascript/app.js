@@ -1,35 +1,32 @@
-$(document).ready(function () {// get top 5 currencies for test build, will increase to higher amounts later
+$(document).ready(function () {
+    // get top 5 currencies for test build, will increase to higher amounts later
     var top5QueryURL = "https://min-api.cryptocompare.com/data/top/totalvol?limit=5&tsym=USD&extraParams=CryptoPlay"
 
-    // return the top 5 coin symbols from the above ajax call, insert them into an array and call the below function to create a new query
-    // Let's store those symbols in the variable 'coins'
+    // two asynchronous calls are made, values are appended once both calls are complete
+    // second call is dependent on symbol values returned by the first call
 
     $.ajax({
         // get top 5 coins
         url: top5QueryURL,
         method: "GET"
     }).then(function (topCoinsResponse) {
+        var priceParams = "";
         console.log(topCoinsResponse);
-        var params = "";
         for (var i = 0; i <= 4; i++) {
-            params += topCoinsResponse.Data[i].CoinInfo.Internal + ",";
+
+            var coinObj = topCoinsResponse.Data[i];
+            var symbol = coinObj.CoinInfo.Name;
+            var row = "<tr>";
+            var rowNum = $("<td>").addClass("num").attr("index", i).text(i + 1); // Int elements under '#' column
+            var rowCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObj.CoinInfo.FullName); // Coin names under 'Name' column
+            var rowMarketCap = $("<td>").addClass("marketCap").attr("index", i); // Market Cap under 'Market Cap' column, no value given until price AJAX call is made
+            var rowPrice = $("<td>").addClass("price").attr("index", i); // Price value under 'Price' column, no value given until price AJAX call is made
+            var rowSupply = $("<td>").addClass("availableSupply").attr("index", i).text(coinObj.ConversionInfo.Supply); // Supply amount under 'Available Supply' column
+            var row24hrChange = $("<td>").addClass("%24hr").attr("index", i); // 24 hour change value under '%24hr' column, no value given until price AJAX call is made
+
+            priceParams += symbol + ",";
+
         };
-        var streamQueryURL = "https://min-api.cryptocompare.com/data/subsWatchlist?fsyms=" + params + "&tsym=USD&extraParams=CryptoPlay"
-        $.ajax({
-            // stream top 5 coins
-            url: streamQueryURL,
-            method: "GET"
-        }).then(function (streamResponse) {
-            console.log(streamResponse);
-            var socket = io.connect("https://streamer.cyrptocompare.com/");
-            var subscriptions = [];
-            for (var i = 0; i <= Object.keys(streamResponse).length - 1; i++) {
-                subscriptions.push(streamResponse[Object.keys(streamResponse)[i]].SubsNeeded[0]);
-            };
-            socket.emit("SubAdd", {subs: subscriptions});
-            socket.on("m", function(message) {
-                console.log(message);
-            })
-        });
+        // second AJAX call
     });
 });
