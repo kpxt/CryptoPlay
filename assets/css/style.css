@@ -8,3 +8,6 @@ color: white;
     margin-top:10%;
     margin-left:3%;
 }
+.card {
+    padding: 0 !important;
+}
