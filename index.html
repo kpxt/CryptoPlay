@@ -18,7 +18,7 @@
 <body>
     <header>
         <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">CryptoPlay</a>
+            <a class="navbar-brand" href="#"><img src="assets/images/cryptoplay.png"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -52,6 +52,7 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col">Symbol</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Market Cap</th>
                                     <th scope="col">Price</th>
@@ -59,7 +60,9 @@
                                     <th scope="col">%24hr</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="topcoins">
+
+                            </tbody>
                             <!-- Create scope='row' attribute for every element under # for Bootstrap-->
                         </table>
                     </div>
