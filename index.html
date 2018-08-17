@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
     <!--jQuery-->
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    </script>
     <!--stylesheet-->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -18,7 +19,13 @@
 <body>
     <header>
         <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#"><img src="assets/images/cryptoplay.png"></a>
+            <a class="navbar-brand logo" href="./index.html">
+                <img src="assets/images/cryptoplay.png">
+            </a>
+            <form class="form-inline ">
+                <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+            </form>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -45,8 +52,8 @@
     <main>
         <div class="container-fluid">
             <div class="row">
-                <div class="card col-md-7">
-                    <div class="card-header">Crypto Currency</div>
+                <div class="card col-md-7 border-dark cChart">
+                    <div class="card-header text-white bg-dark">CRYPTO CURRENCY</div>
                     <div class="card-body">
                         <table class="table">
                             <thead class="thead-dark">
@@ -67,11 +74,11 @@
                         </table>
                     </div>
                 </div>
-                <div class="card col-md-5">
-                    <div class="card-header">Leaderboards</div>
+                <div class="card col-md-4 border-dark leaderboard">
+                    <div class="card-header text-white bg-dark">LEADERBOARDS</div>
                     <div class="card-body">
-                        <div class="card text-center">
-                            <div class="card-header">
+                        <div class="card text-center bg-info">
+                            <div class="card-header ">
                                 <ul class="nav nav-tabs card-header-tabs" role="tablist">
                                     <li role="presentation" class="active">
                                         <a class="nav-link active" href="#earningsOverTimeWrapper" aria-controls="1" role="tab" data-toggle="tab">Earnings Over time</a>
@@ -114,6 +121,8 @@
 
 
     </main>
+    <br>
+    <br>
     <footer class="footer">
         <p class="text-muted text-muted-footer text-center"> &copy; Copyright CryptoPlay </p>
     </footer>
@@ -124,7 +133,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
-    <script src="assets/javascript/app.js"></script> 
+    <script src="assets/javascript/app.js"></script>
     <script src="assets/javascript/firebase.js"></script>
 </body>
 

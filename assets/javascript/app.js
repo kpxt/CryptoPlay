@@ -11,7 +11,7 @@ $(document).ready(function () {
         method: "GET"
     }).then(function (topCoinsResponse) {
         var priceParams = "";
-        
+
         for (var i = 0; i <= 19; i++) {
 
             var coinObj = topCoinsResponse.Data[i];
@@ -22,17 +22,17 @@ $(document).ready(function () {
             // Int elements under '#' column
             var colNum = $("<td>").addClass("num").attr("index", i).text(i + 1);
             // Coin symbol under 'Symbol' column
-            var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src=\"" + icon + "\" width=\"35\">"); 
+            var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src=\"" + icon + "\" width=\"35\">");
             // Coin names under 'Name' column
-            var colCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObj.CoinInfo.FullName); 
+            var colCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObj.CoinInfo.FullName);
             // Market Cap under 'Market Cap' column, no value given until price AJAX call is made
             var colMarketCap = $("<td>").addClass("marketCap").attr("index", i);
             // Price value under 'Price' column, no value given until price AJAX call is made
-            var colPrice = $("<td>").addClass("price").attr("index", i).text(""); 
+            var colPrice = $("<td>").addClass("price").attr("index", i).text("");
             // Supply amount under 'Available Supply' column
-            var colSupply = $("<td>").addClass("availableSupply").attr("index", i).text(Math.round(coinObj.ConversionInfo.Supply)); 
+            var colSupply = $("<td>").addClass("availableSupply").attr("index", i).text(Math.round(coinObj.ConversionInfo.Supply));
             // 24 hour change value under '%24hr' column, no value given until price AJAX call is made
-            var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text(""); 
+            var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text("");
             priceParams += symbol + ",";
 
             row.append(colNum).append(colCoinSymbol).append(colCoinName).append(colMarketCap).append(colPrice).append(colSupply).append(col24hrChange);
@@ -43,7 +43,7 @@ $(document).ready(function () {
         // second AJAX call
         $.ajax({
             url: priceQueryURL,
-            method: "GET"            
+            method: "GET"
         }).then(function (pricesResponse) {
             var pricesObj = pricesResponse.DISPLAY;
             for (var j = 0; j <= Object.keys(pricesObj).length - 1; j++) {

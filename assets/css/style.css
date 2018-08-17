@@ -1,13 +1,47 @@
-nav{
-color: white;
+nav {
+    color: white;
 }
-.register{
-    margin-top:4%;
+
+.register {
+    margin-top: 4%;
 }
-.login{
-    margin-top:10%;
-    margin-left:3%;
+
+.login {
+    margin-top: 10%;
+    margin-left: 3%;
 }
+
 .card {
     padding: 0 !important;
+}
+
+#search {
+    margin-left: -29em;
+    width: 29em;
+}
+
+.cChart {
+    margin: 1em;
+    margin-left: 2em;
+    ;
+}
+
+.leaderboard {
+    margin: 1em;
+    ;
+    height: 20em;
+}
+
+.logo {
+    margin-left: 2em;
+}
+
+footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.nav-link {
+    color: black;
 }

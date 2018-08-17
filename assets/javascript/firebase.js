@@ -21,7 +21,7 @@ var loginPwd = "";
 
 //register user
 $("#btnSubmit").on("click", function (event) {
- 
+
   event.preventDefault();
 
   username = $("#usernameInput").val().trim();

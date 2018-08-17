@@ -20,7 +20,13 @@
 <body>
     <header>
         <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">CryptoPlay</a>
+            <a class="navbar-brand logo" href="./index.html">
+                <img src="assets/images/cryptoplay.png">
+            </a>
+            <form class="form-inline ">
+                <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+            </form>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -47,6 +53,7 @@
     </header>
     <main>
         <br>
+        <br>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 register">
@@ -69,7 +76,7 @@
                             <label for="confirmPassword">Confirm Password</label>
                             <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
                         </div>
-                        <button type="submit" class="btn btn-primary" id="btnSubmit">Submit</button>
+                        <button type="submit" class="btn btn-info" id="btnSubmit">Submit</button>
                     </form>
 
                 </div>
@@ -96,14 +103,16 @@
                             <input type="checkbox" class="form-check-input" id="exampleCheck1">
                             <label class="form-check-label" for="exampleCheck1">Save my login info</label>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="logIn">Submit</button>
+                        <button type="submit" class="btn btn-info" id="logIn">Submit</button>
                     </form>
                 </div>
             </div>
         </div>
         </div>
     </main>
-
+    <br>
+    <br>
+    <br>
     <footer class="footer">
         <p class="text-muted text-muted-footer text-center"> &copy; Copyright CryptoPlay </p>
     </footer>
@@ -111,8 +120,8 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-        <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
-   <!-- <script src="assets/javascript/app.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <!-- <script src="assets/javascript/app.js"></script> -->
     <script src="assets/javascript/firebase.js"></script>
 </body>
 
