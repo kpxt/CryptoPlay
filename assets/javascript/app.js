@@ -10,53 +10,58 @@ $(document).ready(function () {
         url: top5QueryURL,
         method: "GET"
     }).then(function (topCoinsResponse) {
-        var priceParams = "";
+        var priceParams = Object.keys(topCoinsResponse.Data).map(n => topCoinsResponse.Data[n].CoinInfo.Internal).join();
 
-        for (var i = 0; i <= 19; i++) {
-
-            var coinObj = topCoinsResponse.Data[i];
-            var symbol = coinObj.CoinInfo.Name;
-            var icon = "http://www.cryptocompare.com" + coinObj.CoinInfo.ImageUrl;
-            console.log(coinObj);
-            var row = $("<tr>");
-            // Int elements under '#' column
-            var colNum = $("<td>").addClass("num").attr("index", i).text(i + 1);
-            // Coin symbol under 'Symbol' column
-            var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src=\"" + icon + "\" width=\"35\">");
-            // Coin names under 'Name' column
-            var colCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObj.CoinInfo.FullName);
-            // Market Cap under 'Market Cap' column, no value given until price AJAX call is made
-            var colMarketCap = $("<td>").addClass("marketCap").attr("index", i);
-            // Price value under 'Price' column, no value given until price AJAX call is made
-            var colPrice = $("<td>").addClass("price").attr("index", i).text("");
-            // Supply amount under 'Available Supply' column
-            var colSupply = $("<td>").addClass("availableSupply").attr("index", i).text(Math.round(coinObj.ConversionInfo.Supply));
-            // 24 hour change value under '%24hr' column, no value given until price AJAX call is made
-            var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text("");
-            priceParams += symbol + ",";
-
-            row.append(colNum).append(colCoinSymbol).append(colCoinName).append(colMarketCap).append(colPrice).append(colSupply).append(col24hrChange);
-            $("#topcoins").append(row);
-        };
-        console.log(priceParams);
         var priceQueryURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + priceParams + "&tsyms=USD";
+
         // second AJAX call
         $.ajax({
             url: priceQueryURL,
             method: "GET"
         }).then(function (pricesResponse) {
             var pricesObj = pricesResponse.DISPLAY;
-            for (var j = 0; j <= Object.keys(pricesObj).length - 1; j++) {
-                var coinIteration = pricesObj[Object.keys(pricesObj)[j]];
-                var pcnt24val = coinIteration.USD.CHANGEPCT24HOUR
-                $(".marketCap[index='" + j + "']").text(coinIteration.USD.MKTCAP);
-                $(".price[index='" + j + "']").text(coinIteration.USD.PRICE);
-                var pcnt24elem = $(".pcnt24hr[index='" + j + "']").text(pcnt24val + "%");
+            for (var i = 0; i <= Object.keys(pricesObj).length - 1; i++) {
+
+                var coinObjTopCoins = topCoinsResponse.Data[i];
+                var coinObjPrices = pricesObj[Object.keys(pricesObj)[i]];
+
+                var row = $("<tr>").addClass("coinRow").attr("id", coinObjTopCoins.CoinInfo.Name);
+
+                var icon = "http://www.cryptocompare.com" + coinObjTopCoins.CoinInfo.ImageUrl;
+
+                // Int elements under '#' column
+                var colNum = $("<td>").addClass("num").attr("index", i).text(i + 1);
+
+                // Coin symbol under 'Symbol' column
+                var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src=\"" + icon + "\" width=\"35\">");
+
+                // Coin names under 'Name' column
+                var colCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObjTopCoins.CoinInfo.FullName);
+
+                // Market Cap under 'Market Cap' column
+                var colMarketCap = $("<td>").addClass("marketCap").attr("index", i).text(coinObjPrices.USD.MKTCAP);
+
+                // Price value under 'Price' column
+                var colPrice = $("<td>").addClass("price").attr("index", i).text(coinObjPrices.USD.PRICE);
+
+                // Supply amount under 'Available Supply' column
+                var colSupply = $("<td>").addClass("availableSupply").attr("index", i).text(Math.round(coinObjTopCoins.ConversionInfo.Supply));
+
+                // Raw value of 24 hour change, used to conditionally evaluate style of column
+                var pcnt24val = coinObjPrices.USD.CHANGEPCT24HOUR
+                // 24 hour change value under '%24hr' column
+                var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text(pcnt24val + "%");
+
+                row.append(colNum).append(colCoinSymbol).append(colCoinName).append(colMarketCap).append(colPrice).append(colSupply).append(col24hrChange);
+                $("#topcoins").append(row);
+                
+
+                // Coloration of percent change
                 if (parseInt(pcnt24val) > 0) {
-                    pcnt24elem.css("color", "#00ce30");
-                } else {
-                    pcnt24elem.css("color", "#e20000");
-                }
+                    col24hrChange.css("color", "#00ce30");
+                } else if (!(pcnt24val == 0)) {
+                    col24hrChange.css("color", "#e20000");
+                };
             };
         });
     });
