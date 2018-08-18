@@ -28,7 +28,7 @@ nav {
 .cChart {
     margin: 1em;
     margin-left: 2em;
-    ;
+    overflow: scroll;
 }
 
 .leaderboard {
@@ -49,4 +49,16 @@ footer {
 
 .nav-link {
     color: black;
+}
+
+/*.coinRow .fa {
+    transition: .3s transform ease-in-out;
+}
+
+.coinRow .collapsed .fa {
+    transform: rotate(90deg);
+}*/
+
+.moreInfoRow {
+    height: 400px;
 }

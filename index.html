@@ -26,14 +26,13 @@
             </div>
             <div class="col-sm-6">
                 <form class="form-inline ">
-                    <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Look-up Coins..." aria-label="Search">
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </div>
             <div class="col-md-3 user">
                     <p class="text-muted">
-                        <strong>Login/Register </strong>
-                        <strong>  V 10,000.00</strong>
+                        <strong><span id="userBalance"></span></strong>
                     </p>
             </div>
 
@@ -65,11 +64,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="card col-md-7 border-dark cChart">
-                    <div class="card-header text-white bg-dark">CRYPTO CURRENCY
-                        <span class="glyphicon glyphicon-chevron-up"></span>
-                    </div>
+                    <div class="card-header text-white bg-dark">CRYPTO CURRENCY</div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
@@ -148,7 +145,7 @@
         crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <script src="assets/javascript/app.js"></script>
-    <script src="assets/javascript/firebase.js"></script>
+    <script src="assets/javascript/userbase.js"></script>
 </body>
 
 </html>

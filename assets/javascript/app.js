@@ -4,6 +4,12 @@ $(document).ready(function () {
 
     // two asynchronous calls are made, values are appended once both calls are complete
     // second call is dependent on symbol values returned by the first call
+    var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+    if (loggedIn) {
+        $("#userBalance").html("&#8353;10,000");
+    } else {
+        $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
+    };
 
     $.ajax({
         // get top 5 coins
@@ -24,8 +30,11 @@ $(document).ready(function () {
 
                 var coinObjTopCoins = topCoinsResponse.Data[i];
                 var coinObjPrices = pricesObj[Object.keys(pricesObj)[i]];
+                var coinName = coinObjTopCoins.CoinInfo.Name;
+                var row = $("<tr>").addClass("coinRow").attr("id", coinName);
 
-                var row = $("<tr>").addClass("coinRow").attr("id", coinObjTopCoins.CoinInfo.Name);
+                // adding accordion functionality
+                row.attr("data-toggle", "collapse").attr("data-target", "#" + coinName + "-info").attr("aria-expanded", "false").attr("aria-controls", coinName + "-info");
 
                 var icon = "http://www.cryptocompare.com" + coinObjTopCoins.CoinInfo.ImageUrl;
 
@@ -52,9 +61,13 @@ $(document).ready(function () {
                 // 24 hour change value under '%24hr' column
                 var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text(pcnt24val + "%");
 
+                // This is the dummy 'more' info row
+                var moreInfoRow = $("<tr>").addClass("collapse moreInfoRow").attr("id", coinName + "-info");
+                moreInfoRow.append($("<td>").attr("colspan", "7").html("Hidden Info"));
+
                 row.append(colNum).append(colCoinSymbol).append(colCoinName).append(colMarketCap).append(colPrice).append(colSupply).append(col24hrChange);
                 $("#topcoins").append(row);
-                
+                $("#topcoins").append(moreInfoRow);
 
                 // Coloration of percent change
                 if (parseInt(pcnt24val) > 0) {
