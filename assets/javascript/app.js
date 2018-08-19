@@ -108,35 +108,74 @@ $(document).ready(function () {
                             var chartData = {
                                 labels: [],
                                 datasets: [{
-                                    label: "Price",
-                                    data: [],
-                                    // xAxisID: "Date",
-                                    // yAxisID: "Closed At",
-                                    backgroundColor: [
-                                        "rgba(23, 162, 184, 0.2)",
-                                    ],
-                                    borderColor: [
-                                        "rgba(23, 162, 184, 1)"
-                                    ],
-                                    borderWidth: 1
-                                }]
+                                        label: "Daily Low",
+                                        data: [],
+                                        backgroundColor: [
+                                            "rgba(23, 162, 184, 1)"
+                                        ],
+                                        borderColor: [
+                                            "rgba(52, 58, 64, 1)" // black
+                                        ],
+                                        pointBackgroundColor: "rgba(140, 0, 0)",
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: "Closing Price at 00:00 GMT",
+                                        data: [],
+                                        backgroundColor: [
+                                            "rgba(255, 255, 255, 1)"
+                                        ],
+                                        borderColor: [
+                                            "rgba(23, 162, 184, 1)"
+                                        ],
+                                        pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: "Daily High",
+                                        data: [],
+                                        backgroundColor: [
+                                            "rgba(52, 58, 64, 1)"
+
+                                        ],
+                                        borderColor: [
+                                            "rgba(255, 255, 255, 1)" // white
+                                        ],
+                                        pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                        borderWidth: 1
+                                    }]
                             };
 
                             // for the data returned from the AJAX response, modify the chartData variable in order to be rendered correctly by Chart.js
                             for (var j = 0; j <= responseArray.length - 1; j++) {
                                 chartData.labels.push(moment.unix(responseArray[j].time).format("MM/DD/YY"));
-                                chartData.datasets[0].data.push(responseArray[j].close);
+
+                                // Add Closing Price
+                                chartData.datasets[1].data.push(responseArray[j].close);
+
+                                // Add Daily High
+                                chartData.datasets[2].data.push(responseArray[j].high);
+
+                                // Add Daily Low
+                                chartData.datasets[0].data.push(responseArray[j].low);
                             };
 
                             var chart = new Chart(ctx, {
                                 type: 'line',
                                 data: chartData,
                                 options: {
+                                    elements: {
+                                        point: {
+                                            radius: 0,
+                                            hitRadius: 10,
+                                            hoverRadius: 5
+                                        }
+                                    },
                                     scales: {
                                         yAxes: [{
                                             ticks: {
                                                 // include a currency sign in the ticks
-                                                callback: function(value, index, values) {
+                                                callback: function (value, index, values) {
                                                     return "₡" + value;
                                                 }
                                             }
