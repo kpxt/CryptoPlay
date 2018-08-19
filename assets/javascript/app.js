@@ -1,14 +1,124 @@
 $(document).ready(function () {
+    var loggedIn = sessionStorage.getItem("userProfile");
+
+    console.log("Logged in as: " + loggedIn);
+  
+    if (loggedIn != null) {
+      $("#loginPage").html("Logged in as " + loggedIn);  
+    };
+  
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAlIEi8_mjg-nMMp7wD1cFfqq22H8Oz75I",
+      authDomain: "project-x-b0368.firebaseapp.com",
+      databaseURL: "https://project-x-b0368.firebaseio.com",
+      projectId: "project-x-b0368",
+      storageBucket: "project-x-b0368.appspot.com",
+      messagingSenderId: "377881918863"
+    };
+    firebase.initializeApp(config);
+  
+    var database = firebase.database();
+  
+    var username = "";
+    var email = "";
+    var pwd = "";
+    var cfmPwd = "";
+  
+  
+    //register user
+    $("#btnSubmit").on("click", function (event) {
+  
+      event.preventDefault();
+  
+      username = $("#usernameRegister").val().trim();
+      email = $("#emailInput1").val().trim();
+      pwd = $("#inputPwd1").val().trim();
+      cfmPwd = $("#confirmPassword").val().trim();
+  
+  
+      //push to firebase
+      var userRef = database.ref("/" + username);
+      console.log(userRef);
+      database.ref("/" + username + "/email").set(email);
+      database.ref("/" + username + "/balance").set(10000);
+      if (pwd == cfmPwd) {
+        database.ref("/" + username + "/password").set(pwd);
+      } else {
+        alert("Passwords do not match");
+      };
+      database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
+      var userPortfolio = database.ref("/" + username + "/portfolio");
+  
+      //clear fields
+      clear();
+  
+    });
+  
+    //login user
+    $("#logIn").on("click", function (event) {
+      event.preventDefault();
+  
+      var username2 = $("#usernameInput").val().trim();
+      var loginPwd = $("#passwordInput2").val().trim();
+      console.log(username2);
+      console.log(loginPwd);
+  
+      database.ref("/" + username2).once("value").then(function (snapshot) {
+        if (snapshot.val() == null) {
+          alert("There is no username with that name")
+        } else {
+          if (loginPwd == snapshot.val().password) {
+            // successful login
+            sessionStorage.setItem("userProfile", username2);
+            window.location.replace("index.html");
+          } else {
+            alert("Incorrect password");
+          }
+        };
+      });
+  
+      clear();
+    });
+  
+  
+  
+    //clear all user fields
+    function clear() {
+      $("#usernameInput").val("");
+      $("#emailInput1").val("");
+      $("#inputPwd1").val("");
+      $("#confirmPassword").val("");
+      $("#usernameInput").val("");
+      $("#passwordInput2").val("");
+    };
+  
+  
+    $("#signOut").on("click", function (event) {
+      event.preventDefault();
+  
+      firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+      }).catch(function (error) {
+        console.log(error);
+      });
+  
+      clear();
+    });
+  
     // get top 5 currencies for test build, will increase to higher amounts later
     var top5QueryURL = "https://min-api.cryptocompare.com/data/top/totalvol?limit=20&tsym=USD&extraParams=CryptoPlay"
 
     // two asynchronous calls are made, values are appended once both calls are complete
     // second call is dependent on symbol values returned by the first call
-    var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
-    if (loggedIn) {
-        $("#userBalance").html("&#8353;10,000");
+    var loggedIn = sessionStorage.getItem("userProfile");
+    if (loggedIn != null) {
+        database.ref("/" + loggedIn).once("value").then(function(userSnap) {
+            $("#userBalance").html("&#8353;" + userSnap.val().balance);
+        });
     } else {
         $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
+        loggedIn = undefined;
     };
 
     $.ajax({
@@ -19,6 +129,9 @@ $(document).ready(function () {
 
         // create parameters for the second AJAX call based on the values returned by the first
         var priceParams = Object.keys(topCoinsResponse.Data).map(n => topCoinsResponse.Data[n].CoinInfo.Internal).join();
+
+        var priceArray = priceParams.split(",");
+        var notInTop = [];
 
         var priceQueryURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + priceParams + "&tsyms=USD";
 
@@ -54,6 +167,8 @@ $(document).ready(function () {
 
                 // Price value under 'Price' column
                 var colPrice = $("<td>").addClass("price").attr("index", i).text(coinObjPrices.USD.PRICE);
+
+                
 
                 // Supply amount under 'Available Supply' column
                 var colSupply = $("<td>").addClass("availableSupply").attr("index", i).text(Math.round(coinObjTopCoins.ConversionInfo.Supply));
@@ -95,7 +210,7 @@ $(document).ready(function () {
                         var ctx = document.getElementById(thisCoin + "-chart").getContext("2d");
                         console.log(ctx)
                         // create the query for the new AJAX call
-                        var historyQueryURL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + thisCoin + "&tsym=USD&limit=30";
+                        var historyQueryURL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + thisCoin + "&tsym=USD&limit=14";
 
                         $.ajax({
                             url: historyQueryURL,
@@ -176,7 +291,7 @@ $(document).ready(function () {
                                             ticks: {
                                                 // include a currency sign in the ticks
                                                 callback: function (value, index, values) {
-                                                    return "₡" + value;
+                                                    return "$" + value;
                                                 }
                                             }
                                         }]

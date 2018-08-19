@@ -1,17 +1,23 @@
 @media screen and (max-width: 980px) {
     #search {
-        margin-left: -8em;
-        width: 18em;
+        margin-left: -16%;
+        width: 55%;
         
     }
     .logo {
         margin-top: -6%;
-        margin-left: -33%;
-        width: 73%;
+        margin-left: -7%;
+        width: 56%;
         position: static;
     }
     .earningsOverTime{
         width: 7em;
+    }
+    .cChart {
+        margin: 10%;
+        margin-left: 5%;
+        width: 50%;
+        
     }
     .leaderboard{
         
@@ -24,3 +30,4 @@
 @media screen and (max-width: 480px) {
 
 }
+

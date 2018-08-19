@@ -52,9 +52,10 @@ footer {
 }
 
 .canvasWrapper {
-    width: 600px !important;
+    width: 550px !important;
 }
 
 .coinRow:hover {
     background: #e0e0e0;
 }
+
