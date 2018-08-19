@@ -16,6 +16,8 @@ $(document).ready(function () {
         url: top5QueryURL,
         method: "GET"
     }).then(function (topCoinsResponse) {
+
+        // create parameters for the second AJAX call based on the values returned by the first
         var priceParams = Object.keys(topCoinsResponse.Data).map(n => topCoinsResponse.Data[n].CoinInfo.Internal).join();
 
         var priceQueryURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + priceParams + "&tsyms=USD";
@@ -31,10 +33,10 @@ $(document).ready(function () {
                 var coinObjTopCoins = topCoinsResponse.Data[i];
                 var coinObjPrices = pricesObj[Object.keys(pricesObj)[i]];
                 var coinName = coinObjTopCoins.CoinInfo.Name;
-                var row = $("<tr>").addClass("coinRow").attr("id", coinName);
+                var row = $("<tr>").addClass("coinRow clickable").attr("id", coinName).attr("chart-loaded", "false");
 
                 // adding accordion functionality
-                row.attr("data-toggle", "collapse").attr("data-target", "#" + coinName + "-info").attr("aria-expanded", "false").attr("aria-controls", coinName + "-info");
+                row.attr("data-toggle", "collapse").attr("data-target", "#" + coinName + "-info").attr("aria-expanded", "false").attr("aria-controls", coinName + "-info").attr("role", "button");
 
                 var icon = "http://www.cryptocompare.com" + coinObjTopCoins.CoinInfo.ImageUrl;
 
@@ -42,7 +44,7 @@ $(document).ready(function () {
                 var colNum = $("<td>").addClass("num").attr("index", i).text(i + 1);
 
                 // Coin symbol under 'Symbol' column
-                var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src=\"" + icon + "\" width=\"35\">");
+                var colCoinSymbol = $("<td>").addClass("coinSymbol").attr("index", i).html("<img src='" + icon + "' width=\"35\">");
 
                 // Coin names under 'Name' column
                 var colCoinName = $("<td>").addClass("coinName").attr("index", i).text(coinObjTopCoins.CoinInfo.FullName);
@@ -61,9 +63,10 @@ $(document).ready(function () {
                 // 24 hour change value under '%24hr' column
                 var col24hrChange = $("<td>").addClass("pcnt24hr").attr("index", i).text(pcnt24val + "%");
 
-                // This is the dummy 'more' info row
-                var moreInfoRow = $("<tr>").addClass("collapse moreInfoRow").attr("id", coinName + "-info");
-                moreInfoRow.append($("<td>").attr("colspan", "7").html("Hidden Info"));
+                // This is the dummy 'more info' row
+                var moreInfoRow = $("<tr>").addClass("moreInfoRow collapse").attr("id", coinName + "-info").attr("aria-labelledby", coinName).attr("data-parent", "#topCoinsTable");
+                var moreInfoTd = $("<td>").attr("colspan", "7");
+                moreInfoRow.append(moreInfoTd);
 
                 row.append(colNum).append(colCoinSymbol).append(colCoinName).append(colMarketCap).append(colPrice).append(colSupply).append(col24hrChange);
                 $("#topcoins").append(row);
@@ -75,7 +78,80 @@ $(document).ready(function () {
                 } else if (!(pcnt24val == 0)) {
                     col24hrChange.css("color", "#e20000");
                 };
+                canvasWrapper = $("<div>").addClass("canvasWrapper");
+                canvasWrapper.append($("<canvas>").attr("width", "500").attr("height", "250").attr("id", coinName + "-chart"));
+                moreInfoTd.append(canvasWrapper);
+                // adding click handler to row
+                row.on("click", function () {
+                    // if this row's chart was not already loaded...
+                    if (!(JSON.parse($(this).attr("chart-loaded")))) {
+                        // let the program know that this row's chart is now loaded
+                        $(this).attr("chart-loaded", "true");
+
+                        // get the ID of this row
+                        var thisCoin = $(this).attr("id");
+
+                        // get context of corresponding canvas
+                        var ctx = document.getElementById(thisCoin + "-chart").getContext("2d");
+                        console.log(ctx)
+                        // create the query for the new AJAX call
+                        var historyQueryURL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + thisCoin + "&tsym=USD&limit=30";
+
+                        $.ajax({
+                            url: historyQueryURL,
+                            method: "GET"
+                        }).then(function (historyResponse) {
+                            var responseArray = historyResponse.Data;
+                            console.log(responseArray);
+
+                            // create data object to be read by Chart.js and rendered
+                            var chartData = {
+                                labels: [],
+                                datasets: [{
+                                    label: "Price",
+                                    data: [],
+                                    // xAxisID: "Date",
+                                    // yAxisID: "Closed At",
+                                    backgroundColor: [
+                                        "rgba(23, 162, 184, 0.2)",
+                                    ],
+                                    borderColor: [
+                                        "rgba(23, 162, 184, 1)"
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            };
+
+                            // for the data returned from the AJAX response, modify the chartData variable in order to be rendered correctly by Chart.js
+                            for (var j = 0; j <= responseArray.length - 1; j++) {
+                                chartData.labels.push(moment.unix(responseArray[j].time).format("MM/DD/YY"));
+                                chartData.datasets[0].data.push(responseArray[j].close);
+                            };
+
+                            var chart = new Chart(ctx, {
+                                type: 'line',
+                                data: chartData,
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                // include a currency sign in the ticks
+                                                callback: function(value, index, values) {
+                                                    return "₡" + value;
+                                                }
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+
+                            console.log(chartData);
+                        });
+                    };
+                });
             };
         });
     });
+    // Initial AJAX calls and table creation complete
+
 });

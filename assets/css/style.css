@@ -51,14 +51,10 @@ footer {
     color: black;
 }
 
-/*.coinRow .fa {
-    transition: .3s transform ease-in-out;
+.canvasWrapper {
+    width: 600px !important;
 }
 
-.coinRow .collapsed .fa {
-    transform: rotate(90deg);
-}*/
-
-.moreInfoRow {
-    height: 400px;
+.coinRow:hover {
+    background: #e0e0e0;
 }
