@@ -1,20 +1,23 @@
-// create refresh variable which will be recursively assigned with the inner function updatePrices() and cleared when a new row is selected for more information
+
+$(document).ready(function () {
+    // create refresh variable which will be recursively assigned with the inner function updatePrices() and cleared when a new row is selected for more information
     // issue: as functions are nested within AJAX calls and click handlers without nomenclature, the refreshes on prices can only occur once an item is selected
     // restructuring of functions is needed in order to call updatePrices() as soon as the document loads
 
     var refresh;
 
-// test variable in order to control the amount of time between refreshes in seconds
-var refreshPeriod = 30;
+    // test variable in order to control the amount of time between refreshes in seconds
+    var refreshPeriod = 30;
 
-$(document).ready(function () {
     var loggedIn = sessionStorage.getItem("userProfile");
 
-    console.log("Logged in as: " + loggedIn);
+    var userRef;
 
-    if (loggedIn != null) {
-        $("#loginPage").html("Logged in as " + loggedIn);
-    };
+    var userWalletRef;
+
+    var portfolioRef;
+
+    console.log("Logged in as: " + loggedIn);
 
     // Initialize Firebase
     var config = {
@@ -28,6 +31,14 @@ $(document).ready(function () {
     firebase.initializeApp(config);
 
     var database = firebase.database();
+
+    if (loggedIn != null) {
+        $("#loginPage").html("Logged in as " + loggedIn);
+        userRef = database.ref("/" + loggedIn);
+        userWalletRef = database.ref("/" + loggedIn + "/balance");
+        portfolioRef = database.ref("/" + loggedIn + "/portfolio");
+    };
+
 
     var username = "";
     var email = "";
@@ -57,6 +68,7 @@ $(document).ready(function () {
             alert("Passwords do not match");
         };
         database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
+        database.ref("/" + username + "/portfolio").set(false);
         var userPortfolio = database.ref("/" + username + "/portfolio");
 
         //clear fields
@@ -104,15 +116,7 @@ $(document).ready(function () {
 
 
     $("#signOut").on("click", function (event) {
-        event.preventDefault();
-
-        firebase.auth().signOut().then(function () {
-            // Sign-out successful.
-        }).catch(function (error) {
-            console.log(error);
-        });
-
-        clear();
+        // to be built in later stages
     });
 
     var priceParams;
@@ -125,7 +129,7 @@ $(document).ready(function () {
     var loggedIn = sessionStorage.getItem("userProfile");
     if (loggedIn != null) {
         database.ref("/" + loggedIn).once("value").then(function (userSnap) {
-            $("#userBalance").html("&#8353;" + userSnap.val().balance);
+            $("#userBalance").html("&#8353;" + userSnap.val().balance.toFixed(2));
         });
     } else {
         $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
@@ -149,12 +153,13 @@ $(document).ready(function () {
             method: "GET"
         }).then(function (pricesResponse) {
             var pricesObj = pricesResponse.DISPLAY;
+
             for (var i = 0; i <= Object.keys(pricesObj).length - 1; i++) {
 
                 var coinObjTopCoins = topCoinsResponse.Data[i];
                 var coinObjPrices = pricesObj[Object.keys(pricesObj)[i]];
                 var coinName = coinObjTopCoins.CoinInfo.Name;
-                var row = $("<tr>").addClass("coinRow clickable").attr("id", coinName).attr("chart-loaded", "false").attr("index", i);
+                var row = $("<tr>").addClass("coinRow clickable").attr("id", coinName).attr("chart-loaded", "false").attr("index", i).attr("currentPrice", pricesResponse.RAW[Object.keys(pricesResponse.RAW)[i]].USD.PRICE);
 
                 // adding accordion functionality
                 row.attr("data-toggle", "collapse").attr("data-target", "#" + coinName + "-info").attr("aria-expanded", "false").attr("aria-controls", coinName + "-info").attr("role", "button");
@@ -187,9 +192,14 @@ $(document).ready(function () {
                 // This is the dummy 'more info' row
                 var moreInfoRow = $("<tr>").addClass("moreInfoRow collapse").attr("id", coinName + "-info").attr("aria-labelledby", coinName).attr("data-parent", "#topCoinsTable");
                 var moreInfoTd = $("<td>").attr("colspan", "7").addClass("moreInfoContainer");
-                var buyAndSell = $("<div>").attr("forindex", i).addClass("buyAndSell").css("float", "right");
-                var buyBtn = $("<button>").addClass("btn btn-success buySellBtn").text("Buy").attr("onclick", "forRow(" + i + ")"); // could improve the call of these button through js click handlers rather than onclick attributes but it's 1am right now and I'm really tired :(
-                var sellBtn = $("<button>").addClass("btn btn-danger buySellBtn").text("Sell").attr("onclick", "forRow(" + i + ")");
+                var buyAndSell = $("<form>").attr("forindex", i).addClass("buyAndSell").css("float", "right");
+                var howMuch = $("<input>").addClass("howMuch").attr("type", "text").attr("placeholder", "Enter amount to Buy").attr("index", i);
+                var buyBtn = $("<button>").addClass("btn btn-success buySellBtn buy").text("Buy").attr("index", i);
+                var sellBtn = $("<button>").addClass("btn btn-danger buySellBtn sell").text("Sell").attr("index", i);
+
+
+
+                buyAndSell.append(howMuch);
                 buyAndSell.append(buyBtn);
                 buyAndSell.append(sellBtn);
                 moreInfoTd.append(buyAndSell);
@@ -351,34 +361,94 @@ $(document).ready(function () {
                         console.log(priceParams)
 
                         var innerPriceQueryURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + priceParams + "&tsyms=USD";
-                        
+
                         $.ajax({
                             url: innerPriceQueryURL,
                             method: "GET"
-                        }).then(function(innerPriceResponse) {
+                        }).then(function (innerPriceResponse) {
                             console.log(innerPriceResponse);
                             innerPricesObj = innerPriceResponse.DISPLAY;
                             for (var k = 0; k <= Object.keys(innerPricesObj).length - 1; k++) {
                                 var innerCoinObjPrices = innerPricesObj[Object.keys(innerPricesObj)[k]];
                                 var innerColPrice = innerCoinObjPrices.USD.PRICE;
-                                $(".price[index='" + k + "']").html(innerColPrice);                       
+                                $(".price[index='" + k + "']").html(innerColPrice);
                             };
                             callback;
                         });
                         if (refresh) {
                             clearTimeout(refresh);
                         };
-                        refresh = setTimeout(function() {updatePrices()}, refreshPeriod * 1000);
+                        refresh = setTimeout(function () { updatePrices() }, refreshPeriod * 1000);
                     }
                     // initial function on click handler
                     updatePrices(selectRowCallback($(this)));
                 });
             };
+
+            // buy and sell buttons' event handler
+            $(".buySellBtn").on("click", function () {
+                event.preventDefault();
+                var howMuchInput = $(".howMuch[index='" + $(this).attr("index") + "']");
+                var selectedPrice = parseFloat($(".coinRow[index='" + $(this).attr("index") + "']").attr("currentPrice"));
+                var selectedCoin = $(".coinRow[index='" + $(this).attr("index") + "']").attr("id");
+                console.log(selectedCoin);
+                console.log(selectedPrice);
+                if (loggedIn) {
+                    if (/^[0-9]*\.?[0-9]+$/.test(howMuchInput.val()) && parseInt(howMuchInput.val()) > 0) {
+                        // reset placeholder if it was set to show invalidation
+                        howMuchInput.attr("placeholder", "Enter amount to Buy");
+                        // get how much the transaction would cost
+                        var total = parseInt(howMuchInput.val()) * selectedPrice;
+                        console.log(total);
+                        if ($(this).hasClass("buy")) {
+                            userRef.once("value").then(function (snap) {
+                                if (total > snap.val().balance) {
+                                    howMuchInput.attr("placeholder", "Insufficient Funds");
+                                    howMuchInput.val("");
+                                // this condition represents the actual purchase
+                                } else {
+                                    console.log(snap.val());
+                                    userWalletRef.set(snap.val().balance - total);
+
+                                    // modify portfolio
+                                    // if the user does not already have that coin in their portfolio
+                                    if (!(snap.val().portfolio[selectedCoin])) {
+                                        console.log("/" + loggedIn)
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseInt(howMuchInput.val()));
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(selectedPrice);
+                                        // otherwise, if the user already has that coin in their portfolio
+                                    } else {
+                                        console.log(snap.val().portfolio);
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseInt(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned);
+                                        console.log("this is how much there already was in the portfolio: " + snap.val().portfolio[selectedCoin].amountOwned);
+                                        console.log("this is the new amount that is being purchased: " + howMuchInput.val());
+                                        console.log("this is how much the total amount of coins should be now: " + (parseInt(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned))
+                                        console.log(snap.val().portfolio[selectedCoin].amountOwned)
+                                        console.log(snap.val().portfolio[selectedCoin].avgPaidPerCoin)
+                                        console.log(howMuchInput.val())
+                                        console.log(selectedPrice)
+                                        console.log("((" + snap.val().portfolio[selectedCoin].amountOwned + "*" + snap.val().portfolio[selectedCoin].avgPaidPerCoin + ") + ( " + howMuchInput.val() + " * " + selectedPrice + ")) / ( " + parseFloat(snap.val().portfolio[selectedCoin].amountOwned) + parseInt(howMuchInput.val()) + ")");
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) + (parseFloat(howMuchInput.val()) * parseFloat(selectedPrice))) / (snap.val().portfolio[selectedCoin].amountOwned + parseFloat(howMuchInput.val())));
+                                    };
+                                }
+                            });
+                        };
+                    } else if ($(this).hasClass("sell")) {
+                        howMuchInput.val("");
+                        howMuchInput.attr("placeholder", "Invalid Number");
+                    }
+                } else {
+                    alert("You must first sign in to buy or sell any coins")
+                    window.location.replace("signup.html");
+                };
+            });
+
         });
     });
     // Initial AJAX calls and table creation complete
-});
 
-function forRow(i) {
-    console.log("for row:" + i)
-}
+    // whenever if the wallet value changes at any point, update the user's balance status
+    userWalletRef.on("value", function (walletSnap) {
+        $("#userBalance").html("&#8353;" + walletSnap.val().toFixed(2));
+    });
+});

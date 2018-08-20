@@ -1,5 +1,5 @@
 nav {
-    color: white;
+    color: #ffffff;
 }
 
 .register {
@@ -69,4 +69,8 @@ footer {
 .buySellBtn {
     width: 100px;
     margin: 5px 30px 5px auto;
+}
+
+#userBalance {
+    font-size: 30px;
 }
