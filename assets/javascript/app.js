@@ -82,8 +82,6 @@ $(document).ready(function () {
 
         var username2 = $("#usernameInput").val().trim();
         var loginPwd = $("#passwordInput2").val().trim();
-        console.log(username2);
-        console.log(loginPwd);
 
         database.ref("/" + username2).once("value").then(function (snapshot) {
             if (snapshot.val() == null) {
@@ -196,12 +194,13 @@ $(document).ready(function () {
                 var howMuch = $("<input>").addClass("howMuch").attr("type", "text").attr("placeholder", "Enter amount to Buy").attr("index", i);
                 var buyBtn = $("<button>").addClass("btn btn-success buySellBtn buy").text("Buy").attr("index", i);
                 var sellBtn = $("<button>").addClass("btn btn-danger buySellBtn sell").text("Sell").attr("index", i);
-
+                var totalDisplayP = $("<p>").addClass("totalDisplay lead").attr("index", i);
 
 
                 buyAndSell.append(howMuch);
                 buyAndSell.append(buyBtn);
                 buyAndSell.append(sellBtn);
+                buyAndSell.append(totalDisplayP);
                 moreInfoTd.append(buyAndSell);
                 moreInfoRow.append(moreInfoTd);
 
@@ -221,7 +220,6 @@ $(document).ready(function () {
                 // adding click handler to row
                 row.on("click", function () {
                     function selectRowCallback(selectedRow) {
-                        console.log("callback called")
                         // embolden text
                         emboldenText(selectedRow.find(".price"));
                         // if this row's chart was not already loaded...
@@ -333,13 +331,11 @@ $(document).ready(function () {
 
                         // if this object is already bold, 
                         if (textObject.attr("emboldened") == "true") {
-                            console.log("if statement called")
                             textObject.attr("emboldened", "false");
                             textObject.css("font-weight", "normal");
                             textObject.css("text-decoration", "none");
                             // otherwise, if it is not already bold, make it bold
                         } else {
-                            console.log("else called")
                             // textObject.attr("emboldened", "false");
                             textObject.css("font-weight", "normal");
                             textObject.attr("emboldened", "true");
@@ -358,7 +354,6 @@ $(document).ready(function () {
                     function updatePrices(callback) {
                         /* this is similar to the inital population of the table rows, except only the prices are being modified so that users buy coins with live results,
                         and so that this is compatible to be called with setInterval without a callback */
-                        console.log(priceParams)
 
                         var innerPriceQueryURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + priceParams + "&tsyms=USD";
 
@@ -366,7 +361,6 @@ $(document).ready(function () {
                             url: innerPriceQueryURL,
                             method: "GET"
                         }).then(function (innerPriceResponse) {
-                            console.log(innerPriceResponse);
                             innerPricesObj = innerPriceResponse.DISPLAY;
                             for (var k = 0; k <= Object.keys(innerPricesObj).length - 1; k++) {
                                 var innerCoinObjPrices = innerPricesObj[Object.keys(innerPricesObj)[k]];
@@ -388,18 +382,17 @@ $(document).ready(function () {
             // buy and sell buttons' event handler
             $(".buySellBtn").on("click", function () {
                 event.preventDefault();
-                var howMuchInput = $(".howMuch[index='" + $(this).attr("index") + "']");
-                var selectedPrice = parseFloat($(".coinRow[index='" + $(this).attr("index") + "']").attr("currentPrice"));
-                var selectedCoin = $(".coinRow[index='" + $(this).attr("index") + "']").attr("id");
-                console.log(selectedCoin);
-                console.log(selectedPrice);
+                var thisIndex = $(this).attr("index");
+                var howMuchInput = $(".howMuch[index='" + thisIndex + "']");
+                var selectedPrice = parseFloat($(".coinRow[index='" + thisIndex + "']").attr("currentPrice"));
+                var selectedCoin = $(".coinRow[index='" + thisIndex + "']").attr("id");
+
                 if (loggedIn) {
                     if (/^[0-9]*\.?[0-9]+$/.test(howMuchInput.val()) && parseInt(howMuchInput.val()) > 0) {
                         // reset placeholder if it was set to show invalidation
                         howMuchInput.attr("placeholder", "Enter amount to Buy");
                         // get how much the transaction would cost
                         var total = parseInt(howMuchInput.val()) * selectedPrice;
-                        console.log(total);
                         if ($(this).hasClass("buy")) {
                             userRef.once("value").then(function (snap) {
                                 if (total > snap.val().balance) {
@@ -407,30 +400,30 @@ $(document).ready(function () {
                                     howMuchInput.val("");
                                 // this condition represents the actual purchase
                                 } else {
-                                    console.log(snap.val());
                                     userWalletRef.set(snap.val().balance - total);
 
                                     // modify portfolio
                                     // if the user does not already have that coin in their portfolio
                                     if (!(snap.val().portfolio[selectedCoin])) {
-                                        console.log("/" + loggedIn)
                                         database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseInt(howMuchInput.val()));
                                         database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(selectedPrice);
                                         // otherwise, if the user already has that coin in their portfolio
                                     } else {
-                                        console.log(snap.val().portfolio);
                                         database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseInt(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned);
-                                        console.log("this is how much there already was in the portfolio: " + snap.val().portfolio[selectedCoin].amountOwned);
-                                        console.log("this is the new amount that is being purchased: " + howMuchInput.val());
-                                        console.log("this is how much the total amount of coins should be now: " + (parseInt(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned))
-                                        console.log(snap.val().portfolio[selectedCoin].amountOwned)
-                                        console.log(snap.val().portfolio[selectedCoin].avgPaidPerCoin)
-                                        console.log(howMuchInput.val())
-                                        console.log(selectedPrice)
-                                        console.log("((" + snap.val().portfolio[selectedCoin].amountOwned + "*" + snap.val().portfolio[selectedCoin].avgPaidPerCoin + ") + ( " + howMuchInput.val() + " * " + selectedPrice + ")) / ( " + parseFloat(snap.val().portfolio[selectedCoin].amountOwned) + parseInt(howMuchInput.val()) + ")");
                                         database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) + (parseFloat(howMuchInput.val()) * parseFloat(selectedPrice))) / (snap.val().portfolio[selectedCoin].amountOwned + parseFloat(howMuchInput.val())));
                                     };
-                                }
+
+                                    // display purchase amount and fade after 5 seconds
+                                    if (totalDisplay) {
+                                        fadeOut.clearTimeout();
+                                    };
+                                    var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
+                                    totalDisplay.show();
+                                    totalDisplay.html("Bought: &#8353;" + total.toFixed(2));
+                                    var fadeTotal = setTimeout(function() {
+                                        totalDisplay.fadeOut();
+                                    }, 5 * 1000);
+                                };
                             });
                         };
                     } else if ($(this).hasClass("sell")) {
