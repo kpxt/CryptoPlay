@@ -14,20 +14,46 @@
         width: 7em;
     }
     .cChart {
-        margin: 10%;
-        margin-left: 5%;
-        width: 50%;
+        margin: 2%;
+        margin-left: 17%;
+        width: auto;
+        padding: 10%;
         
     }
-    .leaderboard{
-        
+    .title{
+        width: 120%;
+    }
+    .table{
+        width: 124%;
     }
   
 }
-@media screen and (max-width: 768px) {
- 
-}
 @media screen and (max-width: 480px) {
-
+    #search {
+        margin-left: 8%;
+        width: 58%;
+        
+    }
+    .logo {
+        margin-top: -2%;
+        margin-left: 26%;
+    }
+    #userBalance{
+        margin-left: 69%;
+    }
+    .cChart{
+        margin: -1%;
+        margin-left: 1%;
+    }
+    .table{
+        width: 100%;
+    }
+    .earningsOverTime {
+        font-size: 13px;
+        width: 7em;
+    }
+    .totalEarnings {
+        font-size: 14px;
+    }
 }
 

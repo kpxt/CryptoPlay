@@ -29,14 +29,24 @@ nav {
     margin: 1em;
     margin-left: 2em;
     overflow: scroll;
+    
+
 }
 
 .leaderboard {
     margin: 1em;
     height: 20em;
-    overflow: scroll;
+    overflow: hidden;
 }
-
+.earningsOverTime{
+    font-size: 12px;
+}
+.totalEarnings{
+    font-size: 12px;
+}
+#earningsOverTimeTable{
+    font-size: 10px;
+}
 .logo {
     margin-left: 2em;
 }
@@ -71,6 +81,9 @@ footer {
     margin: 5px 30px 5px auto;
 }
 
-#userBalance {
-    font-size: 30px;
+#userBalance{
+    margin-left:4em;
+    font-size: 1em;
+
 }
+
