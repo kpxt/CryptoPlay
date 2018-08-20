@@ -59,3 +59,14 @@ footer {
     background: #e0e0e0;
 }
 
+.buyAndSell {
+    float: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.buySellBtn {
+    width: 100px;
+    margin: 5px 30px 5px auto;
+}
