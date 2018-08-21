@@ -417,7 +417,7 @@ $(document).ready(function () {
                 if (loggedIn) {
                     if (/^[0-9]*\.?[0-9]+$/.test(howMuchInput.val()) && parseInt(howMuchInput.val()) > 0) {
                         // reset placeholder if it was set to show invalidation
-                        howMuchInput.attr("placeholder", "Enter amount to Buy");
+                        howMuchInput.attr("placeholder", "Enter amount to buy..");
                         // get how much the transaction would cost
                         var total = parseInt(howMuchInput.val()) * selectedPrice;
 

@@ -28,6 +28,11 @@
     }
   
 }
+@media screen and (max-width: 760px) {
+    .vl {
+        height: 0px;
+    }
+}
 @media screen and (max-width: 480px) {
     #search {
         margin-left: 8%;
@@ -54,6 +59,17 @@
     }
     .totalEarnings {
         font-size: 14px;
+    }
+    .register {
+        margin-top: 37%;
+    }
+    
+    .login {
+        margin-top: 16%;
+        margin-left: 3%;
+    }
+    .vl {
+        height: 0px;
     }
 }
 

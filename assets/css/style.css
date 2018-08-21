@@ -3,12 +3,17 @@ nav {
 }
 
 .register {
-    margin-top: 4%;
+    margin-top: 11%;
 }
 
 .login {
-    margin-top: 10%;
+    margin-top: 16%;
     margin-left: 3%;
+}
+.vl {
+    border-left: 6px solid gray;
+    height: 600px;
+    margin-top: 9%;
 }
 
 .card {
@@ -54,7 +59,9 @@ nav {
 .logo {
     margin-left: 2em;
 }
-
+.portfolio{
+    margin-top:6em !important;
+}
 footer {
     left: 0;
     bottom: 0;
@@ -94,6 +101,8 @@ footer {
     width: 175px;
     margin: 10px;
     margin-bottom: 30px;
+    margin-top: 3.5em;
+    margin-left:-4em;
 }
 
 .totalDisplay {
@@ -102,3 +111,11 @@ footer {
     margin: auto;
     margin-top: 30px;
 }
+.buy{
+    margin-top: -1em;
+    margin-left:-2em;
+}
+.sell{
+    margin-left:-2em;
+}
+
