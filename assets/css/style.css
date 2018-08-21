@@ -105,6 +105,10 @@ footer {
     margin-left:-4em;
 }
 
+.howMuch::placeholder {
+    font-size: 10px;
+}
+
 .totalDisplay {
     height: 20px;
     display: block;
