@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     // create refresh variable which will be recursively assigned with the inner function updatePrices() and cleared when a new row is selected for more information
     // issue: as functions are nested within AJAX calls and click handlers without nomenclature, the refreshes on prices can only occur once an item is selected
@@ -134,6 +133,25 @@ $(document).ready(function () {
         loggedIn = undefined;
     };
 
+    //updating wallet with coins
+    database.ref().on("child_added", function (userSnap) {
+        console.log(userSnap.val().portfolio);
+        var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
+
+        for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
+            var purchasedObj = portfolioKeyArray[m];
+            console.log(purchasedObj);
+
+            var trow = $("<tr>");
+            var purchasedCoins = $("<td>");
+            purchasedCoins.append(purchasedObj);
+            trow.append(purchasedCoins);
+            $("#portfolio").append(trow);
+        }
+
+
+    });
+
     $.ajax({
         // get top 5 coins
         url: top5QueryURL,
@@ -246,42 +264,43 @@ $(document).ready(function () {
                                 var chartData = {
                                     labels: [],
                                     datasets: [{
-                                        label: "Daily Low",
-                                        data: [],
-                                        backgroundColor: [
-                                            "rgba(23, 162, 184, 1)"
-                                        ],
-                                        borderColor: [
-                                            "rgba(52, 58, 64, 1)" // black
-                                        ],
-                                        pointBackgroundColor: "rgba(140, 0, 0)",
-                                        borderWidth: 1
-                                    },
-                                    {
-                                        label: "Closing Price at 00:00 GMT",
-                                        data: [],
-                                        backgroundColor: [
-                                            "rgba(255, 255, 255, 1)"
-                                        ],
-                                        borderColor: [
-                                            "rgba(23, 162, 184, 1)"
-                                        ],
-                                        pointBackgroundColor: "rgba(255, 0, 0, 1)",
-                                        borderWidth: 1
-                                    },
-                                    {
-                                        label: "Daily High",
-                                        data: [],
-                                        backgroundColor: [
-                                            "rgba(52, 58, 64, 1)"
+                                            label: "Daily Low",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(52, 58, 64, 1)" // black
+                                            ],
+                                            pointBackgroundColor: "rgba(140, 0, 0)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Closing Price at 00:00 GMT",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(255, 255, 255, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Daily High",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(52, 58, 64, 1)"
 
-                                        ],
-                                        borderColor: [
-                                            "rgba(255, 255, 255, 1)" // white
-                                        ],
-                                        pointBackgroundColor: "rgba(255, 160, 160, 1)",
-                                        borderWidth: 1
-                                    }]
+                                            ],
+                                            borderColor: [
+                                                "rgba(255, 255, 255, 1)" // white
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                            borderWidth: 1
+                                        }
+                                    ]
                                 };
 
                                 // for the data returned from the AJAX response, modify the chartData variable in order to be rendered correctly by Chart.js
@@ -372,7 +391,9 @@ $(document).ready(function () {
                         if (refresh) {
                             clearTimeout(refresh);
                         };
-                        refresh = setTimeout(function () { updatePrices() }, refreshPeriod * 1000);
+                        refresh = setTimeout(function () {
+                            updatePrices()
+                        }, refreshPeriod * 1000);
                     }
                     // initial function on click handler
                     updatePrices(selectRowCallback($(this)));
@@ -398,7 +419,7 @@ $(document).ready(function () {
                                 if (total > snap.val().balance) {
                                     howMuchInput.attr("placeholder", "Insufficient Funds");
                                     howMuchInput.val("");
-                                // this condition represents the actual purchase
+                                    // this condition represents the actual purchase
                                 } else {
                                     userWalletRef.set(snap.val().balance - total);
 
