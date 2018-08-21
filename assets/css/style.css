@@ -26,27 +26,31 @@ nav {
 }
 
 .cChart {
+    margin-top: 6em !important;
     margin: 1em;
     margin-left: 2em;
     overflow: scroll;
-    
-
 }
 
 .leaderboard {
+    margin-top: 6em !important;
     margin: 1em;
     height: 20em;
     overflow: hidden;
 }
-.earningsOverTime{
+
+.earningsOverTime {
     font-size: 12px;
 }
-.totalEarnings{
+
+.totalEarnings {
     font-size: 12px;
 }
-#earningsOverTimeTable{
+
+#earningsOverTimeTable {
     font-size: 10px;
 }
+
 .logo {
     margin-left: 2em;
 }
@@ -81,11 +85,11 @@ footer {
     margin: 5px 45px 5px auto;
 }
 
-#userBalance{
-    margin-left:1em;
+#userBalance {
+    margin-left: 1em;
     font-size: 1em;
-
 }
+
 .howMuch {
     width: 175px;
     margin: 10px;
@@ -98,5 +102,3 @@ footer {
     margin: auto;
     margin-top: 30px;
 }
-
-

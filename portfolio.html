@@ -11,16 +11,16 @@
         crossorigin="anonymous">
     <!--jQuery-->
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-     <!--stylesheet-->
+    <!--stylesheet-->
     <link rel="stylesheet" href="assets/css/style.css" type="text/css">
-     <!-- media queries stylesheet-->
-     <link href="assets/css/media-queries.css" rel="stylesheet" type="text/css">
+    <!-- media queries stylesheet-->
+    <link href="assets/css/media-queries.css" rel="stylesheet" type="text/css">
 
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar navbar-dark bg-dark fixed-top">
             <div class="col-sm-3">
                 <a class="navbar-brand logo" href="./index.html">
                     <img src="assets/images/cryptoplay.png">
@@ -33,9 +33,11 @@
                 </form>
             </div>
             <div class="col-md-3 user">
-                    <p class="text-muted">
-                        <strong><span id="userBalance"></span></strong>
-                    </p>
+                <p class="text-muted">
+                    <strong>
+                        <span id="userBalance"></span>
+                    </strong>
+                </p>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +68,9 @@
             <div class="row">
                 <div class="card col-md portfolio">
                     <div class="card-header text-center">
-                        <h1><strong>V 10,000.00</strong></h1>
+                        <h1>
+                            <strong>V 10,000.00</strong>
+                        </h1>
                         <div class="card-body">
                             <div class="card text-center bg-info">
                                 <div class="card text-center bg-info">
@@ -86,7 +90,10 @@
                                             <table class="table" id="walletTimeTable">
                                                 <thead class="thead-dark">
                                                     <tr>
-                                                        <th scope="col">Coin</th>
+                                                        <th scope="col">CryptoCurrency Name</th>
+                                                        <th scope="col">Amount Owned</th>
+                                                        <th scope="col">Average Purchase Price</th>
+                                                        <th scope="col">Current Purchase Price</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="portfolio">

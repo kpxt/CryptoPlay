@@ -119,7 +119,7 @@ $(document).ready(function () {
     var priceParams;
 
     // get top 5 currencies for test build, will increase to higher amounts later
-    var top5QueryURL = "https://min-api.cryptocompare.com/data/top/totalvol?limit=20&tsym=USD&extraParams=CryptoPlay"
+    var top20QueryURL = "https://min-api.cryptocompare.com/data/top/totalvol?limit=20&tsym=USD&extraParams=CryptoPlay"
 
     // two asynchronous calls are made, values are appended once both calls are complete
     // second call is dependent on symbol values returned by the first call
@@ -127,34 +127,40 @@ $(document).ready(function () {
     if (loggedIn != null) {
         database.ref("/" + loggedIn).once("value").then(function (userSnap) {
             $("#userBalance").html("Available Funds: " + "&#8353;" + userSnap.val().balance.toFixed(2));
+            //updating wallet with coins
+            database.ref().on("child_added", function (userSnap) {
+                console.log(userSnap.val().portfolio);
+                var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
+
+                for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
+                    var purchasedObj = portfolioKeyArray[m];
+                    var amountOwned = userSnap.val().portfolio[purchasedObj].amountOwned;
+                    var paidPerCoin = userSnap.val().portfolio[purchasedObj].avgPaidPerCoin.toFixed(2);
+
+                    var trow = $("<tr>");
+                    var coinName = $("<td>");
+                    var coinAmount = $("<td>");
+                    var paidForCoin = $("<td>");
+                    coinName.append(purchasedObj);
+                    coinAmount.append(amountOwned);
+                    paidForCoin.append(paidPerCoin);
+                    trow.append(coinName).append(coinAmount).append(paidForCoin);
+                    $("#portfolio").append(trow);
+                }
+
+
+            });
         });
     } else {
         $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
         loggedIn = undefined;
     };
 
-    //updating wallet with coins
-    database.ref().on("child_added", function (userSnap) {
-        console.log(userSnap.val().portfolio);
-        var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
 
-        for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
-            var purchasedObj = portfolioKeyArray[m];
-            console.log(purchasedObj);
-
-            var trow = $("<tr>");
-            var purchasedCoins = $("<td>");
-            purchasedCoins.append(purchasedObj);
-            trow.append(purchasedCoins);
-            $("#portfolio").append(trow);
-        }
-
-
-    });
 
     $.ajax({
-        // get top 5 coins
-        url: top5QueryURL,
+        // get top 20 coins
+        url: top20QueryURL,
         method: "GET"
     }).then(function (topCoinsResponse) {
 
@@ -414,6 +420,7 @@ $(document).ready(function () {
                         howMuchInput.attr("placeholder", "Enter amount to Buy");
                         // get how much the transaction would cost
                         var total = parseInt(howMuchInput.val()) * selectedPrice;
+
                         if ($(this).hasClass("buy")) {
                             userRef.once("value").then(function (snap) {
                                 if (total > snap.val().balance) {
@@ -421,6 +428,7 @@ $(document).ready(function () {
                                     howMuchInput.val("");
                                     // this condition represents the actual purchase
                                 } else {
+                                    // Reduce the wallet balance                                    
                                     userWalletRef.set(snap.val().balance - total);
 
                                     // modify portfolio
@@ -441,13 +449,21 @@ $(document).ready(function () {
                                     var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
                                     totalDisplay.show();
                                     totalDisplay.html("Bought: &#8353;" + total.toFixed(2));
-                                    var fadeTotal = setTimeout(function() {
+                                    var fadeTotal = setTimeout(function () {
                                         totalDisplay.fadeOut();
                                     }, 5 * 1000);
                                 };
                             });
+                        } else if ($(this).hasClass("sell")) {
+                            userRef.once("value").then(function (snap) {
+                                // if 
+                                if (!(snap.val().portfolio[selectedCoin])) {
+                                    howMuchInput.attr("placeholder", "You don't own any " + selectedCoin);
+                                    howMuchInput.val("");
+                                };
+                            });
                         };
-                    } else if ($(this).hasClass("sell")) {
+                    } else {
                         howMuchInput.val("");
                         howMuchInput.attr("placeholder", "Invalid Number");
                     }
@@ -463,6 +479,6 @@ $(document).ready(function () {
 
     // whenever if the wallet value changes at any point, update the user's balance status
     userWalletRef.on("value", function (walletSnap) {
-        $("#userBalance").html("&#8353;" + walletSnap.val().toFixed(2));
+        $("#userBalance").html("Available Funds: " + "&#8353;" + walletSnap.val().toFixed(2));
     });
 });
