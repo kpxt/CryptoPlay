@@ -127,26 +127,34 @@ $(document).ready(function () {
     // two asynchronous calls are made, values are appended once both calls are complete
     // second call is dependent on symbol values returned by the first call
     var loggedIn = sessionStorage.getItem("userProfile");
+
     if (loggedIn != null) {
         if (document.URL.includes("portfolio.html")) {
             database.ref("/" + loggedIn).once("value").then(function (userSnap) {
-                console.log(Object.keys(userSnap.val().portfolio));
                 portfolioPriceParams = Object.keys(userSnap.val().portfolio).join();
                 var portfolioQuery = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + portfolioPriceParams + "&tsyms=USD"
                 $.ajax({
                     url: portfolioQuery,
                     method: "GET"
                 }).then(function (portfolioResponse) {
+                    var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
+                    var portfolioValue = 0;
                     console.log(portfolioResponse)
                     database.ref().on("child_added", function (userSnap) {
                         console.log(userSnap.val().portfolio);
-                        var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
-    
+                        console.log(portfolioKeyArray)
+
                         for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
+                            console.log("this is the iteration")
+                            console.log(m)
+                            // technical variables
                             var purchasedObj = portfolioKeyArray[m];
                             var amountOwned = userSnap.val().portfolio[purchasedObj].amountOwned;
                             var paidPerCoin = userSnap.val().portfolio[purchasedObj].avgPaidPerCoin.toFixed(2);
-    
+
+                            portfolioValue += userSnap.val().portfolio[purchasedObj].amountOwned * parseFloat(portfolioResponse.RAW[Object.keys(portfolioResponse.RAW)[m]].USD.PRICE);
+                            
+                            // document variables
                             var trow = $("<tr>");
                             var coinName = $("<td>");
                             var coinAmount = $("<td>");
@@ -159,10 +167,16 @@ $(document).ready(function () {
                             trow.append(coinName).append(coinAmount).append(paidForCoin).append(currentPortfolioPrice);
                             $("#portfolio").append(trow);
                         };
+                        // show the portfolio value on the front-end and update it on the backend
+                        $("#portfolioValueDisplay").text(portfolioValue);
+                        database.ref("/" + loggedIn + "/portfolioValue").set(portfolioValue);
+                        // set the Earnings display to the amount of earnings on the account
+                        $("#earningsDisplay").text(userSnap.val().earnings.toFixed(2));
                     });
-                })
-                $("#userBalance").html("Available Funds: " + "&#8353;" + userSnap.val().balance.toFixed(2));
+                    buyNSell();
+                });
                 //updating wallet with coins
+                $("#userBalance").html("Available Funds: " + "&#8353;" + userSnap.val().balance.toFixed(2));
             });
 
         }
@@ -190,6 +204,8 @@ $(document).ready(function () {
                 method: "GET"
             }).then(function (pricesResponse) {
                 var pricesObj = pricesResponse.DISPLAY;
+
+                $("#lastRefreshTime").text(moment().format("M/D/YY HH:mm:ss"));
 
                 for (var i = 0; i <= Object.keys(pricesObj).length - 1; i++) {
 
@@ -401,6 +417,9 @@ $(document).ready(function () {
                                 url: innerPriceQueryURL,
                                 method: "GET"
                             }).then(function (innerPriceResponse) {
+
+                                $("#lastRefreshTime").text(moment().format("M/D/YY HH:mm:ss"));
+
                                 innerPricesObj = innerPriceResponse.DISPLAY;
                                 for (var k = 0; k <= Object.keys(innerPricesObj).length - 1; k++) {
                                     var innerCoinObjPrices = innerPricesObj[Object.keys(innerPricesObj)[k]];
@@ -419,107 +438,118 @@ $(document).ready(function () {
                         // initial function on click handler
                         updatePrices(selectRowCallback($(this)));
                     });
+
+                    buyNSell();
                 };
-
-                // buy and sell buttons' event handler
-                $(".buySellBtn").on("click", function () {
-                    event.preventDefault();
-                    var thisIndex = $(this).attr("index");
-                    var howMuchInput = $(".howMuch[index='" + thisIndex + "']");
-                    var selectedPrice = parseFloat($(".coinRow[index='" + thisIndex + "']").attr("currentPrice"));
-                    var selectedCoin = $(".coinRow[index='" + thisIndex + "']").attr("id");
-
-                    if (loggedIn) {
-                        if (/^[0-9]*\.?[0-9]+$/.test(howMuchInput.val()) && parseInt(howMuchInput.val()) > 0) {
-                            // reset placeholder if it was set to show invalidation
-                            howMuchInput.attr("placeholder", "Enter amount to buy..");
-                            // get how much the transaction would cost
-                            var total = parseFloat(howMuchInput.val()) * parseFloat(selectedPrice);
-
-                            if ($(this).hasClass("buy")) {
-                                userRef.once("value").then(function (snap) {
-                                    if (total > snap.val().balance) {
-                                        howMuchInput.attr("placeholder", "Insufficient Funds");
-                                        howMuchInput.val("");
-                                        // this condition represents the actual purchase
-                                    } else {
-                                        // Reduce the wallet balance                                    
-                                        userWalletRef.set(snap.val().balance - total);
-
-                                        // modify portfolio
-                                        // if the user does not already have that coin in their portfolio
-                                        if (!(snap.val().portfolio[selectedCoin])) {
-                                            // calculate new amount owned
-                                            database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseFloat(howMuchInput.val()));
-                                            // calculate average paid per coin
-                                            database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(selectedPrice);
-                                            // otherwise, if the user already has that coin in their portfolio
-                                        } else {
-                                            // calculate new amount owned
-                                            database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseFloat(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned);
-                                            // calculate average paid per coin
-                                            database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) + total) / (snap.val().portfolio[selectedCoin].amountOwned + parseFloat(howMuchInput.val())));
-                                        };
-
-                                        // display purchase amount and fade after 5 seconds
-                                        if (totalDisplay) {
-                                            fadeOut.clearTimeout();
-                                        };
-                                        var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
-                                        totalDisplay.show();
-                                        totalDisplay.html("Bought: &#8353;" + total.toFixed(2));
-                                        var fadeTotal = setTimeout(function () {
-                                            totalDisplay.fadeOut();
-                                        }, 5 * 1000);
-                                    };
-                                });
-                            } else if ($(this).hasClass("sell")) {
-                                userRef.once("value").then(function (snap) {
-                                    // if the user does not have the selected coin in their portfolio
-                                    if (!(snap.val().portfolio[selectedCoin])) {
-                                        howMuchInput.attr("placeholder", "You don't own any " + selectedCoin);
-                                        howMuchInput.val("");
-                                    } else {
-                                        // if the user tries to sell more coins than they own
-                                        if (howMuchInput.val() > snap.val().portfolio[selectedCoin].amountOwned) {
-                                            howMuchInput.attr("placeholder", "You only have " + snap.val().portfolio[selectedCoin].amountOwned.toFixed(2) + " " + selectedCoin);
-                                            howMuchInput.val("");
-                                        } else {
-                                            // increase the user's wallet balance
-                                            userWalletRef.set(snap.val().balance + total);
-
-                                            // calculate and increase the user's earnings
-                                            var earning = total - (snap.val().portfolio[selectedCoin].avgPaidPerCoin * snap.val().portfolio[selectedCoin].amountOwned);
-                                            database.ref("/" + loggedIn + "/earnings").set(snap.val().earnings + earning);
-
-                                            // if the new amount owned would equal to zero, just remove the branch from the portfolio
-                                            if (snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()) == 0) {
-                                                database.ref("/" + loggedIn + "/portfolio/" + selectedCoin).remove();
-                                            } else {
-                                                // calculate new amount owned
-                                                database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()));
-                                                // calculate new average paid per coin
-                                                database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) - total) / (snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val())));
-                                            };
-                                        };
-                                    };
-                                });
-                            };
-                        } else {
-                            howMuchInput.val("");
-                            howMuchInput.attr("placeholder", "Invalid Number");
-                        }
-                    } else {
-                        alert("You must first sign in to buy or sell any coins")
-                        window.location.replace("signup.html");
-                    };
-                });
-
             });
         });
-    }
+    };
     // Initial AJAX calls and table creation complete
 
+    function buyNSell() {
+        // add event handlers to the buy and sell buttons on the screen
+        // called asynchrously within AJAX promises on index.html and portfolio.html after the buttons are rendered
+        $(".buySellBtn").on("click", function () {
+            event.preventDefault();
+            var thisIndex = $(this).attr("index");
+            var howMuchInput = $(".howMuch[index='" + thisIndex + "']");
+            var selectedPrice = parseFloat($(".coinRow[index='" + thisIndex + "']").attr("currentPrice"));
+            var selectedCoin = $(".coinRow[index='" + thisIndex + "']").attr("id");
+
+            if (loggedIn) {
+                if (/^[0-9]*\.?[0-9]+$/.test(howMuchInput.val()) && parseInt(howMuchInput.val()) > 0) {
+                    // reset placeholder if it was set to show invalidation
+                    howMuchInput.attr("placeholder", "Enter amount to buy..");
+                    // get how much the transaction would cost
+                    var total = parseFloat(howMuchInput.val()) * parseFloat(selectedPrice);
+
+                    if ($(this).hasClass("buy")) {
+                        userRef.once("value").then(function (snap) {
+                            if (total > snap.val().balance) {
+                                howMuchInput.attr("placeholder", "Insufficient Funds");
+                                howMuchInput.val("");
+                                // this condition represents the actual purchase
+                            } else {
+                                // Reduce the wallet balance                                    
+                                userWalletRef.set(snap.val().balance - total);
+
+                                // modify portfolio
+                                // if the user does not already have that coin in their portfolio
+                                if (!(snap.val().portfolio[selectedCoin])) {
+                                    // calculate new amount owned
+                                    database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseFloat(howMuchInput.val()));
+                                    // calculate average paid per coin
+                                    database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(selectedPrice);
+                                    // otherwise, if the user already has that coin in their portfolio
+                                } else {
+                                    // calculate new amount owned
+                                    database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(parseFloat(howMuchInput.val()) + snap.val().portfolio[selectedCoin].amountOwned);
+                                    // calculate average paid per coin
+                                    database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) + total) / (snap.val().portfolio[selectedCoin].amountOwned + parseFloat(howMuchInput.val())));
+                                };
+
+                                // display purchase amount and fade after 5 seconds
+                                if (totalDisplay) {
+                                    fadeOut.clearTimeout();
+                                };
+                                var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
+                                totalDisplay.show();
+                                totalDisplay.html("Bought: &#8353;" + total.toFixed(2));
+                                var fadeTotal = setTimeout(function () {
+                                    totalDisplay.fadeOut();
+                                }, 5 * 1000);
+                            };
+                        });
+                    } else if ($(this).hasClass("sell")) { // add condition if the user sells the last coin in their portfolio
+                        userRef.once("value").then(function (snap) {
+                            // if the user does not have the selected coin in their portfolio
+                            if (!(snap.val().portfolio[selectedCoin])) {
+                                howMuchInput.attr("placeholder", "You don't own any " + selectedCoin);
+                                howMuchInput.val("");
+                            } else {
+                                // if the user tries to sell more coins than they own
+                                if (howMuchInput.val() > snap.val().portfolio[selectedCoin].amountOwned) {
+                                    howMuchInput.attr("placeholder", "You only have " + snap.val().portfolio[selectedCoin].amountOwned.toFixed(2) + " " + selectedCoin);
+                                    howMuchInput.val("");
+                                } else {
+                                    // increase the user's wallet balance
+                                    userWalletRef.set(snap.val().balance + total);
+
+                                    // calculate and increase the user's earnings
+                                    var earning = total - (snap.val().portfolio[selectedCoin].avgPaidPerCoin * snap.val().portfolio[selectedCoin].amountOwned);
+                                    database.ref("/" + loggedIn + "/earnings").set(snap.val().earnings + earning);
+
+                                    // if the new amount owned would equal to zero, just remove the branch from the portfolio
+                                    if (snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()) == 0) {
+                                        // if there is only one coin left in the portfolio that is being sold right now...
+                                        if (Object.keys(snap.val().portfolio).length == 1) {
+                                            // ...do not completely remove the portfolio branch, just set the branch to false resembling when the account initialization...
+                                            database.ref("/" + loggedIn + "/portfolio").set(false);
+                                        } else {
+                                            // ...otherwise, remove that coin's branch alone
+                                            database.ref("/" + loggedIn + "/portfolio/" + selectedCoin).remove();
+                                        }
+                                    } else {
+                                        // calculate new amount owned
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()));
+                                        // calculate new average paid per coin
+                                        database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/avgPaidPerCoin").set(((snap.val().portfolio[selectedCoin].amountOwned * snap.val().portfolio[selectedCoin].avgPaidPerCoin) - total) / (snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val())));
+                                    };
+                                };
+                            };
+                        });
+                    };
+                } else {
+                    howMuchInput.val("");
+                    howMuchInput.attr("placeholder", "Invalid Number");
+                }
+            } else {
+                alert("You must first sign in to buy or sell any coins")
+                window.location.replace("signup.html");
+            };
+        });
+    };
+    // test function
     // whenever if the wallet value changes at any point, update the user's balance status
     userWalletRef.on("value", function (walletSnap) {
         $("#userBalance").html("Available Funds: " + "&#8353;" + walletSnap.val().toFixed(2));
