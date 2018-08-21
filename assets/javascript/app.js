@@ -127,7 +127,7 @@ $(document).ready(function () {
     var loggedIn = sessionStorage.getItem("userProfile");
     if (loggedIn != null) {
         database.ref("/" + loggedIn).once("value").then(function (userSnap) {
-            $("#userBalance").html("&#8353;" + userSnap.val().balance.toFixed(2));
+            $("#userBalance").html("Available Funds: " + "&#8353;" + userSnap.val().balance.toFixed(2));
         });
     } else {
         $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
