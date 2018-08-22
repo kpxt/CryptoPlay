@@ -330,42 +330,42 @@ $(document).ready(function () {
                                     var chartData = {
                                         labels: [],
                                         datasets: [{
-                                            label: "Daily Low",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(23, 162, 184, 1)"
-                                            ],
-                                            borderColor: [
-                                                "rgba(52, 58, 64, 1)" // black
-                                            ],
-                                            pointBackgroundColor: "rgba(140, 0, 0)",
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: "Closing Price at 00:00 GMT",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(255, 255, 255, 1)"
-                                            ],
-                                            borderColor: [
-                                                "rgba(23, 162, 184, 1)"
-                                            ],
-                                            pointBackgroundColor: "rgba(255, 0, 0, 1)",
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: "Daily High",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(52, 58, 64, 1)"
+                                                label: "Daily Low",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(23, 162, 184, 1)"
+                                                ],
+                                                borderColor: [
+                                                    "rgba(52, 58, 64, 1)" // black
+                                                ],
+                                                pointBackgroundColor: "rgba(140, 0, 0)",
+                                                borderWidth: 1
+                                            },
+                                            {
+                                                label: "Closing Price at 00:00 GMT",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(255, 255, 255, 1)"
+                                                ],
+                                                borderColor: [
+                                                    "rgba(23, 162, 184, 1)"
+                                                ],
+                                                pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                                borderWidth: 1
+                                            },
+                                            {
+                                                label: "Daily High",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(52, 58, 64, 1)"
 
-                                            ],
-                                            borderColor: [
-                                                "rgba(255, 255, 255, 1)" // white
-                                            ],
-                                            pointBackgroundColor: "rgba(255, 160, 160, 1)",
-                                            borderWidth: 1
-                                        }
+                                                ],
+                                                borderColor: [
+                                                    "rgba(255, 255, 255, 1)" // white
+                                                ],
+                                                pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                                borderWidth: 1
+                                            }
                                         ]
                                     };
 
@@ -475,19 +475,50 @@ $(document).ready(function () {
 
         // Calculate and display leaderboards
 
-        // Portfolio Value Leaderboard
+        // Pulling Leaderboard Information
         database.ref().once("value").then(function (userbaseSnap) {
             var now = moment().format("x");
             var userArray = Object.keys(userbaseSnap.val());
             var accountList = [];
             for (var o = 0; o <= userArray.length - 1; o++) {
-                if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5){
+                if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5) {
                     accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                 };
+
                 console.log(accountList);
+
+                if (accountList != null) {
+                    for (var p = 0; p <= accountList.length; p++) {
+                        // technical variables
+
+                        var leaderboardObj = accountList[p];
+                        var leaderboardUser = leaderboardObj[0];
+                        var leaderboardValue = leaderboardObj[1].portfolioValue;
+                        var leaderboardCountry = leaderboardObj[1].countryFlag;
+                        console.log(leaderboardUser);
+                        console.log(leaderboardValue);
+                        console.log(leaderboardCountry);
+
+                        // Value Leaderboard document variables
+                        var trow = $("<tr>");
+                        trow.attr("class", "leaderboardRow");
+                        var usernameLB = $("<td>");
+                        var valueLB = $("<td>");
+                        var countryLB = $("<td>");
+                        usernameLB.append(leaderboardUser);
+                        valueLB.append(leaderboardValue);
+                        countryLB.append(leaderboardCountry);
+                        trow.append(countryLB).append(usernameLB).append(valueLB);
+                        $("#valueLB").append(trow);
+                    }
+                }
+
+                // Fastest Earning Leaderboard document variables
+
             };
         });
     };
+
 
 
     function buyNSell() {
