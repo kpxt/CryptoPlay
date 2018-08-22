@@ -486,29 +486,32 @@ $(document).ready(function () {
                 };
 
                 console.log(accountList);
+                for (var p = 0; p <= accountList.length; p++) {
+                    // technical variables
+                    console.log(p);
 
-               
-                        // technical variables
+                    var leaderboardObj = accountList[p];
+                    var leaderboardUserV =leaderboardObj[0];
+                    var leaderboardValue = leaderboardObj[1].portfolioValue;
+                    var leaderboardCountry = leaderboardObj[1].countryFlag;
+                    console.log(leaderboardUserV);
+                    console.log(leaderboardValue);
+                    console.log(leaderboardCountry);
 
-                        var leaderboardObj = accountList[o];
-                        var leaderboardUserV = accountList[0];
-                        var leaderboardValue = leaderboardObj[1].portfolioValue;
-                        var leaderboardCountry = leaderboardObj[1].countryFlag;
-                        console.log(leaderboardUserV);
-                        console.log(leaderboardValue);
-                        console.log(leaderboardCountry);
+                    // Value Leaderboard document variables
+                    var trow = $("<tr>");
+                    trow.attr("class", "leaderboardRow");
+                    var usernameLB = $("<td>");
+                    var valueLB = $("<td>");
+                    var countryLB = $("<td>");
+                    usernameLB.append(leaderboardUserV);
+                    valueLB.append(leaderboardValue);
+                    countryLB.append(leaderboardCountry);
+                    trow.append(countryLB).append(usernameLB).append(valueLB);
+                    $("#valueLB").append(trow);
+                }
 
-                        // Value Leaderboard document variables
-                        var trow = $("<tr>");
-                        trow.attr("class", "leaderboardRow");
-                        var usernameLB = $("<td>");
-                        var valueLB = $("<td>");
-                        var countryLB = $("<td>");
-                        usernameLB.append(leaderboardUserV);
-                        valueLB.append(leaderboardValue);
-                        countryLB.append(leaderboardCountry);
-                        trow.append(countryLB).append(usernameLB).append(valueLB);
-                        $("#valueLB").append(trow);
+
 
 
                 // Fastest Earning Leaderboard document variables
