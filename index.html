@@ -69,7 +69,7 @@
                 <div class="card col-md-8 cChart">
                     <div class="card-header title text-white bg-dark">CRYPTO CURRENCY</div>
                     <div class="card-body">
-                        <small><p class = "text-muted" id="lastUpdate">Last Updated <span id="lastRefreshTime"></span></p></small>
+                        <small><p class="text-muted" id="lastUpdate">Last Updated <span id="lastRefreshTime"></span></p></small>
                         <table id="topCoinsTable" class="table">
                             <thead class="thead-dark table">
                                 <tr>
@@ -97,12 +97,12 @@
                                 <ul class="nav nav-tabs card-header-tabs" role="tablist">
                                     <li role="presentation" class="active">
                                         <a class="nav-link active earningsOverTime" href="#earningsOverTimeWrapper" aria-controls="1" role="tab" data-toggle="tab">
-                                            <strong>Earnings / Time</strong>
+                                            <strong>Top Portfolios</strong>
                                         </a>
                                     </li>
                                     <li role="presentation">
                                         <a class="nav-link totalEarnings" href="#totalEarningsWrapper" aria-controls="2" role="tab" data-toggle="tab">
-                                            <strong>Total Earnings</strong>
+                                            <strong>Fastest Earnings</strong>
                                         </a>
                                     </li>
                                     </li>
@@ -110,22 +110,22 @@
                             </div>
                             <div class="tab-content">
                                 <div role="tab-panel" class="tab-pane active" id="earningsOverTimeWrapper">
-                                    <table class="table" id="earningsOverTimeTable">
+                                    <table class="table leaderboards" id="earningsOverTimeTable">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th scope="col">Username</th>
-                                                <th scope="col">Avg. Daily Earnings</th>
-                                                <th scope="col">Days Active</th>
+                                                <th scope="col">Portfolio Value</th>
                                             </tr>
                                         </thead>
                                     </table>
                                 </div>
                                 <div role="tab-panel" class="tab-pane" id="totalEarningsWrapper">
-                                    <table class="table" id="totalEarningsTable">
+                                    <table class="table leaderboards" id="earningsOverTimeTable">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th scope="col">Username</th>
-                                                <th scope="col">Total Earnings</th>
+                                                <th scope="col">Earnings / Time</th>
+                                                <th scope="col">Days Active</th>
                                             </tr>
                                         </thead>
                                     </table>

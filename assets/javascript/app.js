@@ -1,8 +1,20 @@
 $(document).ready(function () {
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAlIEi8_mjg-nMMp7wD1cFfqq22H8Oz75I",
+        authDomain: "project-x-b0368.firebaseapp.com",
+        databaseURL: "https://project-x-b0368.firebaseio.com",
+        projectId: "project-x-b0368",
+        storageBucket: "project-x-b0368.appspot.com",
+        messagingSenderId: "377881918863"
+    };
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
+
     // create refresh variable which will be recursively assigned with the inner function updatePrices() and cleared when a new row is selected for more information
     // issue: as functions are nested within AJAX calls and click handlers without nomenclature, the refreshes on prices can only occur once an item is selected
     // restructuring of functions is needed in order to call updatePrices() as soon as the document loads
-
     var refresh;
 
     // test variable in order to control the amount of time between refreshes in seconds
@@ -18,18 +30,7 @@ $(document).ready(function () {
 
     console.log("Logged in as: " + loggedIn);
 
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyAlIEi8_mjg-nMMp7wD1cFfqq22H8Oz75I",
-        authDomain: "project-x-b0368.firebaseapp.com",
-        databaseURL: "https://project-x-b0368.firebaseio.com",
-        projectId: "project-x-b0368",
-        storageBucket: "project-x-b0368.appspot.com",
-        messagingSenderId: "377881918863"
-    };
-    firebase.initializeApp(config);
 
-    var database = firebase.database();
 
     if (loggedIn != null) {
         $("#loginPage").html("Logged in as " + loggedIn);
@@ -71,9 +72,21 @@ $(document).ready(function () {
         database.ref("/" + username + "/earnings").set(0);
         database.ref("/" + username + "/portfolioValue").set(0);
 
-        //clear fields
-        clear();
-
+        $.ajax({
+            url: "https://api.ipify.org",
+            method: "GET"
+        }).then(function (IpResponse) {
+            console.log(IpResponse);
+            var flagQuery = "http://api.ipstack.com/" + IpResponse + "?access_key=90919045154960d57d9a14b03c55a689";
+            $.ajax({
+                url: flagQuery,
+                method: "GET"
+            }).then(function (flagResponse) {
+                database.ref("/" + username + "/countryFlag").set(flagResponse.location.country_flag_emoji);
+                sessionStorage.setItem("userProfile", username);
+                window.location.replace("portfolio.html");
+            });
+        });
     });
 
     //login user
@@ -90,7 +103,7 @@ $(document).ready(function () {
                 if (loginPwd == snapshot.val().password) {
                     // successful login
                     sessionStorage.setItem("userProfile", username2);
-                    window.location.replace("index.html");
+                    window.location.replace("portfolio.html");
                 } else {
                     alert("Incorrect password");
                 }
@@ -130,6 +143,7 @@ $(document).ready(function () {
 
     if (loggedIn != null) {
         if (document.URL.includes("portfolio.html")) {
+            database.ref("/" + loggedIn + "/lastOnline").set(moment().format("x"));
             database.ref("/" + loggedIn).once("value").then(function (userSnap) {
                 portfolioPriceParams = Object.keys(userSnap.val().portfolio).join();
                 var portfolioQuery = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + portfolioPriceParams + "&tsyms=USD"
@@ -137,38 +151,53 @@ $(document).ready(function () {
                     url: portfolioQuery,
                     method: "GET"
                 }).then(function (portfolioResponse) {
-                    var portfolioKeyArray = Object.keys(userSnap.val().portfolio)
-                    var portfolioValue = 0;
+                    var portfolioKeyArray = Object.keys(userSnap.val().portfolio);
+                    var portfolioValue = userSnap.val().balance;
                     console.log(portfolioResponse)
-                    database.ref().on("child_added", function (userSnap) {
+                    database.ref("/" + loggedIn).once("value").then(function (userSnap) {
                         console.log(userSnap.val().portfolio);
                         console.log(portfolioKeyArray)
 
-                        for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
-                            console.log("this is the iteration")
-                            console.log(m)
-                            // technical variables
-                            var purchasedObj = portfolioKeyArray[m];
-                            var amountOwned = userSnap.val().portfolio[purchasedObj].amountOwned;
-                            var paidPerCoin = userSnap.val().portfolio[purchasedObj].avgPaidPerCoin.toFixed(2);
+                        // check if any coins in portfolio else return a message to add coins from homepage
+                        if (userSnap.val().portfolio) {
+                            for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
+                                console.log("this is the iteration")
+                                console.log(m)
+                                // technical variables
+                                console.log(m);
+                                var purchasedObj = portfolioKeyArray[m];
+                                console.log(userSnap.val())
+                                var amountOwned = userSnap.val().portfolio[purchasedObj].amountOwned;
+                                console.log(amountOwned);
+                                var paidPerCoin = userSnap.val().portfolio[purchasedObj].avgPaidPerCoin.toFixed(2);
 
-                            portfolioValue += userSnap.val().portfolio[purchasedObj].amountOwned * parseFloat(portfolioResponse.RAW[Object.keys(portfolioResponse.RAW)[m]].USD.PRICE);
-                            
-                            // document variables
+                                portfolioValue += userSnap.val().portfolio[purchasedObj].amountOwned * parseFloat(portfolioResponse.RAW[Object.keys(portfolioResponse.RAW)[m]].USD.PRICE);
+
+                                // document variables
+                                var trow = $("<tr>");
+                                trow.attr("class", "coinPftrow");
+                                var coinName = $("<td>");
+                                var coinAmount = $("<td>");
+                                var paidForCoin = $("<td>");
+                                var currentPortfolioPrice = $("<td>");
+                                coinName.append(purchasedObj);
+                                coinAmount.append(amountOwned);
+                                paidForCoin.append(paidPerCoin);
+                                currentPortfolioPrice.append(portfolioResponse.DISPLAY[Object.keys(portfolioResponse.DISPLAY)[m]].USD.PRICE);
+                                trow.append(coinName).append(coinAmount).append(paidForCoin).append(currentPortfolioPrice);
+                                $("#portfolio").append(trow);
+                            };
+                        } else {
                             var trow = $("<tr>");
-                            var coinName = $("<td>");
-                            var coinAmount = $("<td>");
-                            var paidForCoin = $("<td>");
-                            var currentPortfolioPrice = $("<td>");
-                            coinName.append(purchasedObj);
-                            coinAmount.append(amountOwned);
-                            paidForCoin.append(paidPerCoin);
-                            currentPortfolioPrice.append(portfolioResponse.DISPLAY[Object.keys(portfolioResponse.DISPLAY)[m]].USD.PRICE);
-                            trow.append(coinName).append(coinAmount).append(paidForCoin).append(currentPortfolioPrice);
-                            $("#portfolio").append(trow);
-                        };
+                            trow.attr("class", "coinPftrow");
+                            var noCoin = $("<td>").attr("colspan", 4).html("<center>No coins in your portfolio. Go to <a href=\"index.html\">home page</a> to add coins</center>");
+                            trow.html(noCoin);
+                            $("#portfolio").html(trow);
+                        }
+
+
                         // show the portfolio value on the front-end and update it on the backend
-                        $("#portfolioValueDisplay").text(portfolioValue);
+                        $("#portfolioValueDisplay").text(portfolioValue.toFixed(2));
                         database.ref("/" + loggedIn + "/portfolioValue").set(portfolioValue);
                         // set the Earnings display to the amount of earnings on the account
                         $("#earningsDisplay").text(userSnap.val().earnings.toFixed(2));
@@ -443,13 +472,39 @@ $(document).ready(function () {
                 };
             });
         });
+
+        // Calculate and display leaderboards
+
+        // Portfolio Value Leaderboard
+        database.ref().once("value").then(function (userbaseSnap) {
+            var now = moment().format("x");
+            var userArray = Object.keys(userbaseSnap.val());
+            var accountList = [];
+            for (var o = 0; o <= userArray.length - 1; o++) {
+                console.log("now is");
+                console.log(now);
+                console.log("date last logged on is");
+                console.log(userbaseSnap.val()[userArray[o]].lastOnline);
+                console.log("days passed is");
+                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline, 'x').days())
+                console.log("unix time difference is");
+                console.log(now - userbaseSnap.val()[userArray[o]].lastOnline)
+                console.log("duration formatted difference as days is")
+                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays())
+                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline, 'x').asDays() < 5);
+                if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5){
+                    accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
+                };
+                console.log(accountList);
+            };
+        });
     };
-    // Initial AJAX calls and table creation complete
+
 
     function buyNSell() {
         // add event handlers to the buy and sell buttons on the screen
         // called asynchrously within AJAX promises on index.html and portfolio.html after the buttons are rendered
-        $(".buySellBtn").on("click", function () {
+        $(".buySellBtn").unbind().click(function () {
             event.preventDefault();
             var thisIndex = $(this).attr("index");
             var howMuchInput = $(".howMuch[index='" + thisIndex + "']");
@@ -494,13 +549,14 @@ $(document).ready(function () {
                                 };
                                 var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
                                 totalDisplay.show();
-                                totalDisplay.html("Bought: &#8353;" + total.toFixed(2));
+                                totalDisplay.html("Bought &#8353;" + total.toFixed(2));
                                 var fadeTotal = setTimeout(function () {
                                     totalDisplay.fadeOut();
                                 }, 5 * 1000);
                             };
                         });
-                    } else if ($(this).hasClass("sell")) { // add condition if the user sells the last coin in their portfolio
+                    } else if ($(this).hasClass("sell")) {
+                        console.log(howMuchInput.val())
                         userRef.once("value").then(function (snap) {
                             // if the user does not have the selected coin in their portfolio
                             if (!(snap.val().portfolio[selectedCoin])) {
@@ -509,7 +565,7 @@ $(document).ready(function () {
                             } else {
                                 // if the user tries to sell more coins than they own
                                 if (howMuchInput.val() > snap.val().portfolio[selectedCoin].amountOwned) {
-                                    howMuchInput.attr("placeholder", "You only have " + snap.val().portfolio[selectedCoin].amountOwned.toFixed(2) + " " + selectedCoin);
+                                    howMuchInput.attr("placeholder", "You only have " + parseFloat(snap.val().portfolio[selectedCoin].amountOwned).toFixed(2) + " " + selectedCoin);
                                     howMuchInput.val("");
                                 } else {
                                     // increase the user's wallet balance
@@ -518,6 +574,16 @@ $(document).ready(function () {
                                     // calculate and increase the user's earnings
                                     var earning = total - (snap.val().portfolio[selectedCoin].avgPaidPerCoin * snap.val().portfolio[selectedCoin].amountOwned);
                                     database.ref("/" + loggedIn + "/earnings").set(snap.val().earnings + earning);
+
+                                    if (totalDisplay) {
+                                        fadeOut.clearTimeout();
+                                    };
+                                    var totalDisplay = $(".totalDisplay[index='" + thisIndex + "']");
+                                    totalDisplay.show();
+                                    totalDisplay.html("Sold &#8353;" + total.toFixed(2));
+                                    var fadeTotal = setTimeout(function () {
+                                        totalDisplay.fadeOut();
+                                    }, 5 * 1000);
 
                                     // if the new amount owned would equal to zero, just remove the branch from the portfolio
                                     if (snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()) == 0) {
@@ -530,6 +596,8 @@ $(document).ready(function () {
                                             database.ref("/" + loggedIn + "/portfolio/" + selectedCoin).remove();
                                         }
                                     } else {
+                                        console.log(typeof parseFloat(snap.val().portfolio[selectedCoin].amountOwned))
+                                        console.log(typeof howMuchInput.val())
                                         // calculate new amount owned
                                         database.ref("/" + loggedIn + "/portfolio/" + selectedCoin + "/amountOwned").set(snap.val().portfolio[selectedCoin].amountOwned - parseFloat(howMuchInput.val()));
                                         // calculate new average paid per coin
@@ -549,7 +617,6 @@ $(document).ready(function () {
             };
         });
     };
-    // test function
     // whenever if the wallet value changes at any point, update the user's balance status
     userWalletRef.on("value", function (walletSnap) {
         $("#userBalance").html("Available Funds: " + "&#8353;" + walletSnap.val().toFixed(2));
