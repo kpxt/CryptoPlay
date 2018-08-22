@@ -58,36 +58,36 @@ $(document).ready(function () {
 
 
         //push to firebase
-        var userRef = database.ref("/" + username);
-        console.log(userRef);
-        database.ref("/" + username + "/email").set(email);
-        database.ref("/" + username + "/balance").set(10000);
         if (pwd == cfmPwd) {
+            var userRef = database.ref("/" + username);
+            console.log(userRef);
+            database.ref("/" + username + "/email").set(email);
+            database.ref("/" + username + "/balance").set(10000);
             database.ref("/" + username + "/password").set(pwd);
+            database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
+            database.ref("/" + username + "/portfolio").set(false);
+            database.ref("/" + username + "/earnings").set(0);
+            database.ref("/" + username + "/portfolioValue").set(0);
+            $.ajax({
+                url: "https://api.ipify.org",
+                method: "GET"
+            }).then(function (IpResponse) {
+                console.log(IpResponse);
+                var flagQuery = "http://api.ipstack.com/" + IpResponse + "?access_key=90919045154960d57d9a14b03c55a689";
+                $.ajax({
+                    url: flagQuery,
+                    method: "GET"
+                }).then(function (flagResponse) {
+                    database.ref("/" + username + "/countryFlag").set(flagResponse.location.country_flag_emoji);
+                    sessionStorage.setItem("userProfile", username);
+                    window.location.replace("portfolio.html");
+                });
+            });
         } else {
             alert("Passwords do not match");
         };
-        database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
-        database.ref("/" + username + "/portfolio").set(false);
-        database.ref("/" + username + "/earnings").set(0);
-        database.ref("/" + username + "/portfolioValue").set(0);
-
-        $.ajax({
-            url: "https://api.ipify.org",
-            method: "GET"
-        }).then(function (IpResponse) {
-            console.log(IpResponse);
-            var flagQuery = "http://api.ipstack.com/" + IpResponse + "?access_key=90919045154960d57d9a14b03c55a689";
-            $.ajax({
-                url: flagQuery,
-                method: "GET"
-            }).then(function (flagResponse) {
-                database.ref("/" + username + "/countryFlag").set(flagResponse.location.country_flag_emoji);
-                sessionStorage.setItem("userProfile", username);
-                window.location.replace("portfolio.html");
-            });
-        });
     });
+
 
     //login user
     $("#logIn").on("click", function (event) {
@@ -481,17 +481,6 @@ $(document).ready(function () {
             var userArray = Object.keys(userbaseSnap.val());
             var accountList = [];
             for (var o = 0; o <= userArray.length - 1; o++) {
-                console.log("now is");
-                console.log(now);
-                console.log("date last logged on is");
-                console.log(userbaseSnap.val()[userArray[o]].lastOnline);
-                console.log("days passed is");
-                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline, 'x').days())
-                console.log("unix time difference is");
-                console.log(now - userbaseSnap.val()[userArray[o]].lastOnline)
-                console.log("duration formatted difference as days is")
-                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays())
-                console.log(moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline, 'x').asDays() < 5);
                 if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5){
                     accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                 };
