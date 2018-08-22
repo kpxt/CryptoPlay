@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CryptoPlay</title>
+    <!-- icon-->
+    <link rel="icon" type="image/png" href="assets/images/crypto.png">
     <!--Bootstrap-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
@@ -15,6 +17,7 @@
     <link rel="stylesheet" href="assets/css/style.css" type="text/css">
     <!-- media queries stylesheet-->
     <link rel="stylesheet" href="assets/css/media-queries.css" type="text/css">
+  
 </head>
 
 <body>
@@ -69,7 +72,11 @@
                 <div class="card col-md-8 cChart">
                     <div class="card-header title text-white bg-dark">CRYPTO CURRENCY</div>
                     <div class="card-body">
-                        <small><p class="text-muted" id="lastUpdate">Last Updated <span id="lastRefreshTime"></span></p></small>
+                        <small>
+                            <p class="text-muted" id="lastUpdate">Last Updated
+                                <span id="lastRefreshTime"></span>
+                            </p>
+                        </small>
                         <table id="topCoinsTable" class="table">
                             <thead class="thead-dark table">
                                 <tr>
@@ -145,7 +152,7 @@
     </main>
     <br>
     <br>
-    <footer class="footer">
+    <footer class="footer sticky-bottom">
         <p class="text-muted text-muted-footer text-center"> &copy; Copyright CryptoPlay </p>
     </footer>
 
