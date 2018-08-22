@@ -487,15 +487,14 @@ $(document).ready(function () {
 
                 console.log(accountList);
 
-                if (accountList != null) {
-                    for (var p = 0; p <= accountList.length; p++) {
+               
                         // technical variables
 
-                        var leaderboardObj = accountList[p];
-                        var leaderboardUser = leaderboardObj[0];
+                        var leaderboardObj = accountList[o];
+                        var leaderboardUserV = accountList[0];
                         var leaderboardValue = leaderboardObj[1].portfolioValue;
                         var leaderboardCountry = leaderboardObj[1].countryFlag;
-                        console.log(leaderboardUser);
+                        console.log(leaderboardUserV);
                         console.log(leaderboardValue);
                         console.log(leaderboardCountry);
 
@@ -505,15 +504,15 @@ $(document).ready(function () {
                         var usernameLB = $("<td>");
                         var valueLB = $("<td>");
                         var countryLB = $("<td>");
-                        usernameLB.append(leaderboardUser);
+                        usernameLB.append(leaderboardUserV);
                         valueLB.append(leaderboardValue);
                         countryLB.append(leaderboardCountry);
                         trow.append(countryLB).append(usernameLB).append(valueLB);
                         $("#valueLB").append(trow);
-                    }
-                }
+
 
                 // Fastest Earning Leaderboard document variables
+
 
             };
         });
