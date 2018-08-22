@@ -490,7 +490,7 @@ $(document).ready(function () {
             }
 
 
-                for (var p = 0; p <= accountList.length; p++) {
+                for (var p = 0; p <= accountList.length -1; p++) {
                     // technical variables
                     console.log(p);
 
