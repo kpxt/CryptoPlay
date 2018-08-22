@@ -52,7 +52,7 @@ nav {
     font-size: 12px;
 }
 
-#earningsOverTimeTable {
+.leaderboards {
     font-size: 10px;
 }
 
@@ -125,4 +125,9 @@ footer {
 
 #lastUpdate {
     margin: 0;
+}
+
+.coinPftrow {
+    background-color: #ffffff;
+    border: 2px solid #eeeeee;
 }
