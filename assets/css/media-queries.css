@@ -3,7 +3,6 @@
     #search {
         margin-left: -16%;
         width: 55%;
-        
     }
     .logo {
         margin-top: -6%;
@@ -11,101 +10,116 @@
         width: 56%;
         position: static;
     }
-    .earningsOverTime{
-        width: 7em;
+    #earningsOverTimeTable {
+        font-size: 8px;
+        font-weight: bold;
+        height: 10%;
+        
     }
     .cChart {
         margin: 2%;
-        margin-left: 17%;
+        margin-left: 1%;
         width: auto;
         padding: 10%;
-        
     }
-    .title{
+    .title {
         width: 120%;
     }
-    .table{
+    .table {
         width: 100%;
     }
+    #topCoinsTable {
+        width: 99%;
+        font-size: 67%;
+        font-weight: bold;
+    }
+    #lastUpdate {
+        font-size: 75%;
+    }
+    .leaderboard {
+        overflow: scroll;
+       height:40%;
+    }
     /* Portfolio page */
-    .pTitle{
+    .pTitle {
         font-size: 114% !important;
         font-weight: bolder;
     }
-   .teTitle{
-    font-size: 81% !important;
-    font-weight: bolder;
-   }
-   .walletTable{
-       font-size: 61%;
-   }
-   .walletWrapper{
-       font-size: 61%;
-       font-weight: bold; 
-   }
-   .coinPftrow{
-    font-size: 61%;
-    font-weight: bold;
-   }
-   #userBalance{
-    font-size: 81%;
-    margin-left: 0%;
-   }
-   .searchBar{
-    width: 95%;
-    margin-left: 8%;
-   }
-   footer{
-       font-size: 10%;
-   }
- .wBody{
-    margin-top: -2%;
- }
- /*Sign-up page */
-
+    .teTitle {
+        font-size: 81% !important;
+        font-weight: bolder;
+    }
+    .walletTable {
+        font-size: 61%;
+    }
+    .walletWrapper {
+        font-size: 61%;
+        font-weight: bold;
+    }
+    .coinPftrow {
+        font-size: 61%;
+        font-weight: bold;
+    }
+    #userBalance {
+        font-size: 81%;
+        margin-left: 0%;
+    }
+    .searchBar {
+        width: 95%;
+        margin-left: 8%;
+    }
+    footer {
+        font-size: 10%;
+    }
+    .wBody {
+        margin-top: -2%;
+    }
+    /*Sign-up page */
 }
+
 @media screen and (max-width: 780px) {
     /* Homepage */
-   
     /* Portfolio page */
-   .logo{
-    width: 96% !important;
-   }
-   #search{
-    margin-left: -65%;
-    width: 95%;
-   }
-   #userBalance{
-    margin-left: 61%;
-   }
-   .portfolio {
-    margin-top: 9em !important;
-}
-
-     /*Sign-up page */
-     .vl {
+    .logo {
+        width: 96% !important;
+    }
+    #search {
+        margin-left: -65%;
+        width: 95%;
+    }
+    #userBalance {
+        margin-left: 61%;
+    }
+    .portfolio {
+        margin-top: 9em !important;
+    }
+    /*Sign-up page */
+    .vl {
         height: 0px;
     }
+    .register {
+        margin-top: 21%;
+    }
 }
+
 @media screen and (max-width: 480px) {
     /* Homepage */
     #search {
         margin-left: -2%;
         width: 72%;
-        
     }
     .logo {
         margin-top: -2%;
         margin-left: 26%;
     }
-    #userBalance{
+    #userBalance {
         margin-left: 69%;
     }
-    .cChart{
+    .cChart {
         margin: -1%;
         margin-left: 1%;
     }
-    .table{
+    .table {
         width: 100%;
     }
     .earningsOverTime {
@@ -118,26 +132,22 @@
     .register {
         margin-top: 37%;
     }
-    
     .login {
         margin-top: 16%;
         margin-left: 3%;
     }
-     /* Portfolio page */
-#logo{
-    margin-left: 28%;
-
-}
-.portfolio {
-    margin-top: 13em !important;
-}
-#userBalance{
-    margin-left: 53%;
-}
-
+    /* Portfolio page */
+    #logo {
+        margin-left: 28%;
+    }
+    .portfolio {
+        margin-top: 13em !important;
+    }
+    #userBalance {
+        margin-left: 53%;
+    }
     /*Sign-up page */
     .vl {
         height: 0px;
     }
 }
-
