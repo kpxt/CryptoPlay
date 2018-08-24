@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CryptoPlay</title>
+    <title>CryptoPlay - Virtual Playground</title>
     <!-- icon-->
     <link rel="icon" type="image/png" href="assets/images/crypto.png">
     <!--Bootstrap-->
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="assets/css/style.css" type="text/css">
     <!-- media queries stylesheet-->
     <link rel="stylesheet" href="assets/css/media-queries.css" type="text/css">
-  
+
 </head>
 
 <body>
@@ -28,12 +28,12 @@
                     <img src="assets/images/cryptoplay.png">
                 </a>
             </div>
-            <div class="col-sm-6">
+            <!-- <div class="col-sm-6">
                 <form class="form-inline ">
                     <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Look-up Coins..." aria-label="Search">
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div>
+  	          </form>
+            </div> -->
             <div class="col-md-3 user">
                 <p class="text-light">
                     <strong>
@@ -41,7 +41,6 @@
                     </strong>
                 </p>
             </div>
-
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -99,16 +98,18 @@
                 <div class="card col-md-3 border-dark leaderboard">
                     <div class="card-header text-white bg-dark">LEADERBOARDS</div>
                     <div class="card-body">
+
+
                         <div class="card text-center bg-info">
-                            <div class="card-header ">
+                            <div class="card-header leaderboardChart">
                                 <ul class="nav nav-tabs card-header-tabs" role="tablist">
                                     <li role="presentation" class="active">
-                                        <a class="nav-link active earningsOverTime" href="#earningsOverTimeWrapper" aria-controls="1" role="tab" data-toggle="tab">
+                                        <a class="nav-link active earningsOverTime" href="#topPortfoliosWrapper" aria-controls="1" role="tab" data-toggle="tab">
                                             <strong>Top Portfolios</strong>
                                         </a>
                                     </li>
                                     <li role="presentation">
-                                        <a class="nav-link totalEarnings" href="#totalEarningsWrapper" aria-controls="2" role="tab" data-toggle="tab">
+                                        <a class="nav-link totalEarnings" href="#topEarningsWrapper" aria-controls="2" role="tab" data-toggle="tab">
                                             <strong>Fastest Earnings</strong>
                                         </a>
                                     </li>
@@ -116,28 +117,27 @@
                                 </ul>
                             </div>
                             <div class="tab-content">
-                                <div role="tab-panel" class="tab-pane active" id="earningsOverTimeWrapper">
-                                    <table class="table leaderboards" id="earningsOverTimeTable">
+                                <div role="tab-panel" class="tab-pane active" id="topPortfoliosWrapper">
+                                    <table class="table leaderboards">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th scope="col">Country</th>
-                                                <th scope="col">Username</th>
+                                                <th scope="col">User</th>
                                                 <th scope="col">Portfolio Value</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="valueLB">
-                                        </tbody>
+                                        <tbody id="valueLB"></tbody>
                                     </table>
                                 </div>
-                                <div role="tab-panel" class="tab-pane" id="totalEarningsWrapper">
-                                    <table class="table leaderboards" id="earningsOverTimeTable">
+                                <div role="tab-panel" class="tab-pane active" id="topEarningsWrapper">
+                                    <table class="table leaderboards">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th scope="col">Username</th>
-                                                <th scope="col">Earnings / Time</th>
+                                                <th scope="col">Total Earnings</th>
                                                 <th scope="col">Days Active</th>
                                             </tr>
                                         </thead>
+                                        <tbody id="earningsLB"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -148,10 +148,11 @@
 
         </div>
 
-
     </main>
     <br>
     <br>
+
+
     <footer class="footer sticky-bottom">
         <p class="text-muted text-muted-footer text-center"> &copy; Copyright CryptoPlay </p>
     </footer>
