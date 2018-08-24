@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="assets/css/style.css" type="text/css">
     <!-- media queries stylesheet-->
     <link rel="stylesheet" href="assets/css/media-queries.css" type="text/css">
+
  
+
 </head>
  
 <body>
@@ -40,6 +42,8 @@
                         <span id="userBalance"></span>
                     </strong>
                 </p>
+
+
  	       </div>
  
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -98,19 +102,23 @@
                 <div class="card col-md-3 border-dark leaderboard">
                     <div class="card-header text-white bg-dark">LEADERBOARDS</div>
                     <div class="card-body">
+
              	           
  
-                        <div class="card text-center bg-info">
+                          <div class="card text-center bg-info">
                             <div class="card-header leaderboardChart">
                                 <ul class="nav nav-tabs card-header-tabs" role="tablist">
-             	                   <li role="presentation" class="active">
+                                    <li role="presentation" class="active">
                                         <a class="nav-link active earningsOverTime" href="#topPortfoliosWrapper" aria-controls="1" role="tab" data-toggle="tab">
-                                	        <strong>Top Portfolios</strong>
+                                            <strong>Top Portfolios</strong>
+
                                         </a>
                                     </li>
                                     <li role="presentation">
                                         <a class="nav-link totalEarnings" href="#topEarningsWrapper" aria-controls="2" role="tab" data-toggle="tab">
-                                            <strong>Highest Earnings</strong>
+
+                                            <strong>Fastest Earnings</strong>
+
                                         </a>
                               	  </li>
                                     </li>
@@ -121,28 +129,31 @@
                                     <table class="table leaderboards">
                                         <thead class="thead-dark">
                                             <tr>
-                                       	     <th scope="col">Country</th>
-                                                <th scope="col">User</th>
+                                       	                                                    <th scope="col">User</th>
                                                 <th scope="col">Portfolio Value</th>
                                             </tr>
-         	                           </thead>
-                                        <tbody id="valueLB">
-                                        </tbody>
+                                        </thead>
+                                        <tbody id="valueLB"></tbody>
                                     </table>
                                 </div>
-                      	      <div role="tab-panel" class="tab-pane active" id="topEarningsWrapper">
+                                <div role="tab-panel" class="tab-pane active" id="topEarningsWrapper">
+
                                     <table class="table leaderboards">
                                         <thead class="thead-dark">
                                      	   <tr>
                                                 <th scope="col">Country</th>
                                                 <th scope="col">Username</th>
-                                                <th scope="col">Earnings</th>
+
+
+                                                <th scope="col">Total Earnings</th>
+      <th scope="col">Days Active</th>
            	                             </tr>
                                         </thead>
                                         <tbody id="earningsLB">
                                            
                                         </tbody>
           	                      </table>
+
                                 </div>
                             </div>
                         </div>
@@ -151,11 +162,13 @@
             </div>
  
         </div>
+
  
     </main>
     <br>
     <br>
  
+
     <footer class="footer sticky-bottom">
         <p class="text-muted text-muted-footer text-center"> &copy; Copyright CryptoPlay </p>
     </footer>
