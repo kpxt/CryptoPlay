@@ -85,6 +85,17 @@ $(document).ready(function () {
             });
         } else {
             alert("Passwords do not match");
+            var newDiv = $("<div>")
+            newDiv.addClass("modal", "modal-content").attr("role", "dialog");
+            var modalHeaderDiv = $("<div>");
+            modalHeaderDiv.addClass("modal-header");
+            var modalHeader = $("<h5>");
+            modalHeader.addClass("modal-title");
+            modalHeader.text("Error");
+            modalXBtn = $("<button>");
+            modalXBtn.addClass("close").attr("type","button").attr("data-dismiss","modal").attr("aria-label", "Close");
+
+
         };
     });
 
@@ -473,8 +484,8 @@ $(document).ready(function () {
             });
         });
 
-         // Calculate and display leaderboards
- 
+        // Calculate and display leaderboards
+
         // Pulling Leaderboard Information
         database.ref().once("value").then(function (userbaseSnap) {
             var now = moment().format("x");
@@ -485,23 +496,23 @@ $(document).ready(function () {
                     accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                 };
             }
- 
-            accountList.sort(function(obj1, obj2) {
-                return  obj2[1].portfolioValue - obj1[1].portfolioValue;
+
+            accountList.sort(function (obj1, obj2) {
+                return obj2[1].portfolioValue - obj1[1].portfolioValue;
             });
- 
+
             console.log(accountList);
- 
+
             for (var p = 0; p <= accountList.length - 1; p++) {
                 // technical variables
- 
+
                 var leaderboardObj = accountList[p];
                 var leaderboardUserV = leaderboardObj[0];
                 var leaderboardValue = leaderboardObj[1].portfolioValue.toFixed(2);
                 var leaderboardCountry = leaderboardObj[1].countryFlag;
                 console.log(leaderboardUserV);
                 console.log(leaderboardValue);
- 
+
                 // Value Leaderboard document variables
                 var trow = $("<tr>");
                 trow.attr("class", "leaderboardRow");
@@ -513,30 +524,30 @@ $(document).ready(function () {
                 countryLB.append(leaderboardCountry);
                 trow.append(countryLB).append(usernameLB).append(valueLB);
                 $("#valueLB").append(trow);
-                // Fastest Earning Leaderboard document variables
-    	    };
- 
-            accountList.sort(function(obj1, obj2) {
-                return  obj2[1].earnings - obj1[1].earnings;
+
+            };
+            // Fastest Earning Leaderboard document variables
+            accountList.sort(function (obj1, obj2) {
+                return obj2[1].earnings - obj1[1].earnings;
             });
- 
+
             console.log(accountList);
- 
+
             for (var q = 0; q <= accountList.length - 1; q++) {
-       	     // technical variables
+                // technical variables
                 var now = moment().format("x");
                 var leaderboardObj = accountList[q];
                 var leaderboardCountry = leaderboardObj[1].countryFlag;
                 var leaderboardUserV = leaderboardObj[0];
                 var leaderboardEarnings = leaderboardObj[1].earnings;
                 // var userDaysActive = parseFloat((moment.duration((now - leaderboardObj[1].lastOnline), 'milliseconds')).asDays()).toFixed(2);
- 
+
                 $("#earningsLB").append("<tr class=\"leaderboardRow\"><td>" + leaderboardCountry + "</td><td>" + leaderboardUserV + "</td><td>" + leaderboardEarnings + "</td></tr>");
                 // $("#earningsLB").append(etrow);
-                // Fastest Earning Leaderboard document variables
+
             };
- 
-           
+
+
         });
     };
 
