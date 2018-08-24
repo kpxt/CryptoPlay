@@ -94,8 +94,6 @@ $(document).ready(function () {
             modalHeader.text("Error");
             modalXBtn = $("<button>");
             modalXBtn.addClass("close").attr("type","button").attr("data-dismiss","modal").attr("aria-label", "Close");
-
-
         };
     });
 
@@ -341,42 +339,42 @@ $(document).ready(function () {
                                     var chartData = {
                                         labels: [],
                                         datasets: [{
-                                                label: "Daily Low",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(23, 162, 184, 1)"
-                                                ],
-                                                borderColor: [
-                                                    "rgba(52, 58, 64, 1)" // black
-                                                ],
-                                                pointBackgroundColor: "rgba(140, 0, 0)",
-                                                borderWidth: 1
-                                            },
-                                            {
-                                                label: "Closing Price at 00:00 GMT",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(255, 255, 255, 1)"
-                                                ],
-                                                borderColor: [
-                                                    "rgba(23, 162, 184, 1)"
-                                                ],
-                                                pointBackgroundColor: "rgba(255, 0, 0, 1)",
-                                                borderWidth: 1
-                                            },
-                                            {
-                                                label: "Daily High",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(52, 58, 64, 1)"
+                                            label: "Daily Low",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(52, 58, 64, 1)" // black
+                                            ],
+                                            pointBackgroundColor: "rgba(140, 0, 0)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Closing Price at 00:00 GMT",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(255, 255, 255, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Daily High",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(52, 58, 64, 1)"
 
-                                                ],
-                                                borderColor: [
-                                                    "rgba(255, 255, 255, 1)" // white
-                                                ],
-                                                pointBackgroundColor: "rgba(255, 160, 160, 1)",
-                                                borderWidth: 1
-                                            }
+                                            ],
+                                            borderColor: [
+                                                "rgba(255, 255, 255, 1)" // white
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                            borderWidth: 1
+                                        }
                                         ]
                                     };
 
@@ -490,64 +488,63 @@ $(document).ready(function () {
         database.ref().once("value").then(function (userbaseSnap) {
             var now = moment().format("x");
             var userArray = Object.keys(userbaseSnap.val());
-            var accountList = [];
+            var accountListPort = [];
+            var accountListEarn = [];
+
+            var indexPort = 0;
+            var indexEarn = 0;
+
             for (var o = 0; o <= userArray.length - 1; o++) {
                 if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5) {
-                    accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
+                    accountListPort.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
+                    var trowPort = $("<tr>").addClass("leaderboardRow portRow").attr("index", indexPort);
+                    var usernameLBPort = $("<td>").addClass("portRowUser").attr("index", indexPort);
+                    var valueLBPort = $("<td>").addClass("portRowValue").attr("index", indexPort);
+                    trowPort.append(usernameLBPort).append(valueLBPort);
+                    $("#valueLB").append(trowPort);
+                    indexPort++;
                 };
-            }
+                if (userbaseSnap.val()[userArray[o]].earnings > 0) {
+                    accountListEarn.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
+                    var trowEarn = $("<tr>").addClass("leaderboardRow earnRow").attr("index", indexPort);
+                    var usernameLBEarn = $("<td>").addClass("earnRowUser").attr("index", indexEarn);
+                    var valueLBEarn = $("<td>").addClass("earnRowValue").attr("index", indexEarn);
+                    var daysActive = $("<td>").addClass("earnRowDays").attr("index", indexEarn)
+                    trowEarn.append(usernameLBEarn).append(valueLBEarn).append(daysActive);
+                    $("#earningsLB").append(trowEarn);
+                    indexEarn++;
+                };
+            };
 
-            accountList.sort(function (obj1, obj2) {
+            accountListPort.sort(function (obj1, obj2) {
                 return obj2[1].portfolioValue - obj1[1].portfolioValue;
             });
 
-            console.log(accountList);
-
-            for (var p = 0; p <= accountList.length - 1; p++) {
-                // technical variables
-
-                var leaderboardObj = accountList[p];
-                var leaderboardUserV = leaderboardObj[0];
-                var leaderboardValue = leaderboardObj[1].portfolioValue.toFixed(2);
-                var leaderboardCountry = leaderboardObj[1].countryFlag;
-                console.log(leaderboardUserV);
-                console.log(leaderboardValue);
-
-                // Value Leaderboard document variables
-                var trow = $("<tr>");
-                trow.attr("class", "leaderboardRow");
-                var usernameLB = $("<td>");
-                var valueLB = $("<td>");
-                var countryLB = $("<td>");
-                usernameLB.append(leaderboardUserV);
-                valueLB.append("$ " + leaderboardValue);
-                countryLB.append(leaderboardCountry);
-                trow.append(countryLB).append(usernameLB).append(valueLB);
-                $("#valueLB").append(trow);
-
-            };
-            // Fastest Earning Leaderboard document variables
-            accountList.sort(function (obj1, obj2) {
-                return obj2[1].earnings - obj1[1].earnings;
+            accountListEarn.sort(function (obj1, obj2) {
+                console.log(now - obj2[1].accountBday)
+                return (obj2[1].earnings / (now - obj2[1].accountBday)) - (obj1[1].earnings / (now - obj1[1].accountBday));
             });
 
-            console.log(accountList);
+            console.log(accountListPort)
+            console.log(accountListEarn)
 
-            for (var q = 0; q <= accountList.length - 1; q++) {
-                // technical variables
-                var now = moment().format("x");
-                var leaderboardObj = accountList[q];
-                var leaderboardCountry = leaderboardObj[1].countryFlag;
-                var leaderboardUserV = leaderboardObj[0];
-                var leaderboardEarnings = leaderboardObj[1].earnings;
-                // var userDaysActive = parseFloat((moment.duration((now - leaderboardObj[1].lastOnline), 'milliseconds')).asDays()).toFixed(2);
+            for (var p = 0; p <= 9 && ((p <= accountListPort.length - 1) || (p <= accountListEarn.length - 1)); p++) {
 
-                $("#earningsLB").append("<tr class=\"leaderboardRow\"><td>" + leaderboardCountry + "</td><td>" + leaderboardUserV + "</td><td>" + leaderboardEarnings + "</td></tr>");
-                // $("#earningsLB").append(etrow);
-
-            };
-
-
+                if (accountListPort[p]) {
+                    console.log(accountListPort[p][0])
+                    $(".portRowUser[index='" + p + "']").text(accountListPort[p][1].countryFlag + " " + accountListPort[p][0]);
+                    $(".portRowValue[index='" + p + "']").text(accountListPort[p][1].portfolioValue.toFixed(2));
+                };
+                if (accountListEarn[p]) {
+                    console.log(accountListEarn[p][0]);
+                    $(".earnRowUser[index='" + p + "']").text(accountListEarn[p][1].countryFlag + " " + accountListEarn[p][0]);
+                    $(".earnRowValue[index='" + p + "']").text(accountListEarn[p][1].earnings.toFixed(2))
+                    console.log(moment.duration(now - accountListEarn[p][1].accountBday).asDays())
+                    $(".earnRowDays[index='" + p + "']").text(Math.ceil(moment.duration(now - accountListEarn[p][1].accountBday, "milliseconds").asDays()));
+                };
+            }
+            // hide the earnings table again
+            $("#topEarningsWrapper").removeClass("active");
         });
     };
 

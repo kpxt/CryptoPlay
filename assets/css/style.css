@@ -34,14 +34,14 @@ nav {
     margin-top: 6em !important;
     margin: 1em;
     margin-left: 2em;
-    overflow: scroll;
+
 }
 
 .leaderboard {
     margin-top: 6em !important;
     margin: 1em;
     height: 20em;
-    overflow: hidden;
+
 }
 
 .earningsOverTime {
@@ -134,4 +134,7 @@ footer {
 .leaderboardRow{
     background-color: #ffffff;
     border: 2px solid #eeeeee;
+}
+#leaderboardWrapper {
+    overflow: scroll;
 }
