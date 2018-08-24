@@ -1,8 +1,8 @@
 @media screen and (max-width: 980px) {
+    /* Homepage */
     #search {
         margin-left: -16%;
         width: 55%;
-        
     }
     .logo {
         margin-top: -6%;
@@ -10,66 +10,170 @@
         width: 56%;
         position: static;
     }
-    .earningsOverTime{
-        width: 7em;
+    #earningsOverTimeTable {
+        font-size: 8px;
+        font-weight: bold;
+        height: 10%;
+        
     }
     .cChart {
         margin: 2%;
-        margin-left: 17%;
+        margin-left: 1%;
         width: auto;
         padding: 10%;
-        
     }
-    .title{
+    .title {
         width: 120%;
     }
-    .table{
-        width: 124%;
+    .table {
+        width: 100%;
     }
-  
+    #topCoinsTable {
+        width: 99%;
+        font-size: 67%;
+        font-weight: bold;
+    }
+    #lastUpdate {
+        font-size: 75%;
+    }
+    .leaderboard {
+        overflow: scroll;
+       height: 60%;
+       margin: 0%;
+    }
+    .leaderboardCard{
+        width: 108%;
+    margin-left: -3%;
+    margin-top: -5%;
+    }
+    /* Portfolio page */
+    .pTitle {
+        font-size: 114% !important;
+        font-weight: bolder;
+    }
+    .teTitle {
+        font-size: 81% !important;
+        font-weight: bolder;
+    }
+    .walletTable {
+        font-size: 61%;
+    }
+    .walletWrapper {
+        font-size: 61%;
+        font-weight: bold;
+    }
+    .coinPftrow {
+        font-size: 61%;
+        font-weight: bold;
+    }
+    #userBalance {
+        font-size: 81%;
+        margin-left: 0%;
+    }
+    .searchBar {
+        width: 95%;
+        margin-left: 8%;
+    }
+    footer {
+        font-size: 10%;
+    }
+    .wBody {
+        margin-top: -2%;
+    }
+    /*Sign-up page */
 }
+
 @media screen and (max-width: 760px) {
+    /* Homepage */
+    .leaderboardCard{
+        width: 134%;
+        margin-left: -17%;
+        margin-top: -5%;
+    }
+    #topCoinsTable{
+        margin-left: -3%;
+    }
+    .cChart{
+        margin-left: 3%;
+    }
+    /* Portfolio page */
+    .logo {
+        width: 96% !important;
+    }
+    #search {
+        margin-left: -9%;
+    width: 65%;
+    }
+    #userBalance {
+        margin-left: 61%;
+    }
+    .portfolio {
+        margin-top: 9em !important;
+    }
+    /*Sign-up page */
     .vl {
         height: 0px;
     }
+    .register {
+        margin-top: 21%;
+    }
 }
+
 @media screen and (max-width: 480px) {
+    /* Homepage */
     #search {
-        margin-left: 8%;
-        width: 58%;
-        
+        margin-left: -2%;
+        width: 72%;
     }
     .logo {
         margin-top: -2%;
         margin-left: 26%;
     }
-    #userBalance{
+    #userBalance {
         margin-left: 69%;
     }
-    .cChart{
+    .cChart {
         margin: -1%;
         margin-left: 1%;
+        margin-top: 11em !important;
     }
-    .table{
+    .table {
         width: 100%;
     }
     .earningsOverTime {
-        font-size: 13px;
+        font-size: 16px;
         width: 7em;
     }
     .totalEarnings {
-        font-size: 14px;
+        font-size: 16px;
     }
     .register {
         margin-top: 37%;
     }
-    
     .login {
         margin-top: 16%;
         margin-left: 3%;
     }
+    .leaderboardCard{
+        width: 109%;
+        margin-left: -4%;
+        margin-top: -3%;
+    }
+    #valueLB{
+        font-size: 12px;
+    }
+    /* Portfolio page */
+    #logo {
+        margin-left: 28%;
+    }
+    .portfolio {
+        margin-top: 13em !important;
+    }
+    #userBalance {
+        margin-left: 53%;
+    }
+    /*Sign-up page */
     .vl {
         height: 0px;
     }
 }
-

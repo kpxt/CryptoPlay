@@ -473,8 +473,8 @@ $(document).ready(function () {
             });
         });
 
-        // Calculate and display leaderboards
-
+         // Calculate and display leaderboards
+ 
         // Pulling Leaderboard Information
         database.ref().once("value").then(function (userbaseSnap) {
             var now = moment().format("x");
@@ -484,24 +484,24 @@ $(document).ready(function () {
                 if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5) {
                     accountList.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                 };
-
-                console.log(accountList);
-
             }
-
-
+ 
+            accountList.sort(function(obj1, obj2) {
+                return  obj2[1].portfolioValue - obj1[1].portfolioValue;
+            });
+ 
+            console.log(accountList);
+ 
             for (var p = 0; p <= accountList.length - 1; p++) {
                 // technical variables
-                console.log(p);
-
+ 
                 var leaderboardObj = accountList[p];
                 var leaderboardUserV = leaderboardObj[0];
                 var leaderboardValue = leaderboardObj[1].portfolioValue.toFixed(2);
                 var leaderboardCountry = leaderboardObj[1].countryFlag;
                 console.log(leaderboardUserV);
                 console.log(leaderboardValue);
-                console.log(leaderboardCountry);
-
+ 
                 // Value Leaderboard document variables
                 var trow = $("<tr>");
                 trow.attr("class", "leaderboardRow");
@@ -514,11 +514,32 @@ $(document).ready(function () {
                 trow.append(countryLB).append(usernameLB).append(valueLB);
                 $("#valueLB").append(trow);
                 // Fastest Earning Leaderboard document variables
-
-
+    	    };
+ 
+            accountList.sort(function(obj1, obj2) {
+                return  obj2[1].earnings - obj1[1].earnings;
+            });
+ 
+            console.log(accountList);
+ 
+            for (var q = 0; q <= accountList.length - 1; q++) {
+       	     // technical variables
+                var now = moment().format("x");
+                var leaderboardObj = accountList[q];
+                var leaderboardCountry = leaderboardObj[1].countryFlag;
+                var leaderboardUserV = leaderboardObj[0];
+                var leaderboardEarnings = leaderboardObj[1].earnings;
+                // var userDaysActive = parseFloat((moment.duration((now - leaderboardObj[1].lastOnline), 'milliseconds')).asDays()).toFixed(2);
+ 
+                $("#earningsLB").append("<tr class=\"leaderboardRow\"><td>" + leaderboardCountry + "</td><td>" + leaderboardUserV + "</td><td>" + leaderboardEarnings + "</td></tr>");
+                // $("#earningsLB").append(etrow);
+                // Fastest Earning Leaderboard document variables
             };
+ 
+           
         });
     };
+
 
 
 
