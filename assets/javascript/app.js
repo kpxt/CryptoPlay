@@ -190,8 +190,8 @@ $(document).ready(function () {
     // second call is dependent on symbol values returned by the first call
     var loggedIn = sessionStorage.getItem("userProfile");
 
-    if (loggedIn != null) {
-        if (document.URL.includes("portfolio.html")) {
+    if (document.URL.includes("portfolio.html")) {
+        if (loggedIn != null) {
             console.log("before setting new button")
             $("#loginPageBtn").html("<a href='#' class='nav-link' id='signOut'>Sign Out of " + loggedIn + "</a>");
             console.log("after setting new button")
@@ -260,14 +260,15 @@ $(document).ready(function () {
                 $("#userBalance").html("Available Funds: " + "&#8353;" + userSnap.val().balance.toFixed(2));
             });
 
-        }
-    } else {
-        $("#userBalance").append("<a href='signup.html' id='loginReg'>Login/Register</a>");
-        loggedIn = undefined;
+        } else {
+            $("#userBalance").append("<a href='signup.html' id='loginReg'>Login/Register</a>");
+            loggedIn = undefined;
+            window.location.replace("signup.html");
+        };
     };
 
 
-    if (document.URL.includes("index.html")) {
+    if (!(document.URL.includes("portfolio.html")) && !(document.URL.includes("signup.html"))) {
         $("#loadingIcon").show();
         $.ajax({
             // get top 20 coins
@@ -385,42 +386,42 @@ $(document).ready(function () {
                                     var chartData = {
                                         labels: [],
                                         datasets: [{
-                                                label: "Daily Low",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(23, 162, 184, 1)"
-                                                ],
-                                                borderColor: [
-                                                    "rgba(52, 58, 64, 1)" // black
-                                                ],
-                                                pointBackgroundColor: "rgba(140, 0, 0)",
-                                                borderWidth: 1
-                                            },
-                                            {
-                                                label: "Cg Price at 00:00 GMT",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(255, 255, 255, 1)"
-                                                ],
-                                                borderColor: [
-                                                    "rgba(23, 162, 184, 1)"
-                                                ],
-                                                pointBackgroundColor: "rgba(255, 0, 0, 1)",
-                                                borderWidth: 1
-                                            },
-                                            {
-                                                label: "Daily High",
-                                                data: [],
-                                                backgroundColor: [
-                                                    "rgba(52, 58, 64, 1)"
+                                            label: "Daily Low",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(52, 58, 64, 1)" // black
+                                            ],
+                                            pointBackgroundColor: "rgba(140, 0, 0)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Cg Price at 00:00 GMT",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(255, 255, 255, 1)"
+                                            ],
+                                            borderColor: [
+                                                "rgba(23, 162, 184, 1)"
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: "Daily High",
+                                            data: [],
+                                            backgroundColor: [
+                                                "rgba(52, 58, 64, 1)"
 
-                                                ],
-                                                borderColor: [
-                                                    "rgba(255, 255, 255, 1)" // white
-                                                ],
-                                                pointBackgroundColor: "rgba(255, 160, 160, 1)",
-                                                borderWidth: 1
-                                            }
+                                            ],
+                                            borderColor: [
+                                                "rgba(255, 255, 255, 1)" // white
+                                            ],
+                                            pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                            borderWidth: 1
+                                        }
                                         ]
                                     };
 
