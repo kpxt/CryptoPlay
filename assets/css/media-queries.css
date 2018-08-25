@@ -14,7 +14,6 @@
         font-size: 8px;
         font-weight: bold;
         height: 10%;
-        
     }
     .cChart {
         margin: 2%;
@@ -38,13 +37,13 @@
     }
     .leaderboard {
         overflow: scroll;
-       height: 60%;
-       margin: 0%;
+        height: 60%;
+        margin: 0%;
     }
-    .leaderboardCard{
+    .leaderboardCard {
         width: 108%;
-    margin-left: -3%;
-    margin-top: -5%;
+        margin-left: -3%;
+        margin-top: -5%;
     }
     /* Portfolio page */
     .pTitle {
@@ -85,15 +84,15 @@
 
 @media screen and (max-width: 760px) {
     /* Homepage */
-    .leaderboardCard{
+    .leaderboardCard {
         width: 134%;
         margin-left: -17%;
         margin-top: -5%;
     }
-    #topCoinsTable{
+    #topCoinsTable {
         margin-left: -3%;
     }
-    .cChart{
+    .cChart {
         margin-left: 3%;
     }
     /* Portfolio page */
@@ -102,7 +101,7 @@
     }
     #search {
         margin-left: -9%;
-    width: 65%;
+        width: 65%;
     }
     #userBalance {
         margin-left: 61%;
@@ -154,13 +153,28 @@
         margin-top: 16%;
         margin-left: 3%;
     }
-    .leaderboardCard{
+    .leaderboardCard {
         width: 109%;
         margin-left: -4%;
         margin-top: -3%;
     }
-    #valueLB{
+    #valueLB {
         font-size: 12px;
+    }
+    #marketCap{
+        display:none;
+    }
+    .marketCap{
+        display:none;
+    }
+    #availableSupply{
+        display: none;
+    }
+    .availableSupply{
+        display: none;
+    }
+    .title{
+        width: 100%;
     }
     /* Portfolio page */
     #logo {

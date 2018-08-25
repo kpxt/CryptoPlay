@@ -33,7 +33,7 @@ $(document).ready(function () {
 
 
     if (loggedIn != null) {
-        $("#loginPage").html("Logged in as " + loggedIn);
+        $("#loginPageBtn").html("<a href='#' class='nav-link' id='signOut'>Sign Out of " + loggedIn + "</a>");
         userRef = database.ref("/" + loggedIn);
         userWalletRef = database.ref("/" + loggedIn + "/balance");
         portfolioRef = database.ref("/" + loggedIn + "/portfolio");
@@ -84,16 +84,22 @@ $(document).ready(function () {
                 });
             });
         } else {
-            alert("Passwords do not match");
-            var newDiv = $("<div>")
-            newDiv.addClass("modal", "modal-content").attr("role", "dialog");
-            var modalHeaderDiv = $("<div>");
-            modalHeaderDiv.addClass("modal-header");
-            var modalHeader = $("<h5>");
-            modalHeader.addClass("modal-title");
-            modalHeader.text("Error");
-            modalXBtn = $("<button>");
-            modalXBtn.addClass("close").attr("type","button").attr("data-dismiss","modal").attr("aria-label", "Close");
+            //alert("Passwords do not match");
+            var newDiv = $("<div>");
+            newDiv.addClass("alert alert-primary").attr("role", "alert");
+            alertHeader = $("<h4>");
+            alertHeader.addClass("alert-heading");
+            alertHeader.text("Error");
+            alertBody = $("<p>");
+            alertBody.text("Passwords do not match");
+            var alertBtn = $("<button>");
+            alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
+            var span = $("<span>").attr("aria-hidden", "true").html("&times;");
+            alertBtn.append(span);
+
+
+            newDiv.append(alertBtn).append(alertHeader).append(alertBody);
+            $(".alertBtn").append(newDiv);
         };
     });
 
@@ -107,14 +113,44 @@ $(document).ready(function () {
 
         database.ref("/" + username2).once("value").then(function (snapshot) {
             if (snapshot.val() == null) {
-                alert("There is no username with that name")
+
+                var newDiv = $("<div>");
+                newDiv.addClass("alert alert-primary").attr("role", "alert");
+                alertHeader = $("<h4>");
+                alertHeader.addClass("alert-heading");
+                alertHeader.text("Error");
+                alertBody = $("<p>");
+                alertBody.text("There is no username with that name");
+                var alertBtn = $("<button>");
+                alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
+                var span = $("<span>").attr("aria-hidden", "true").html("&times;");
+                alertBtn.append(span);
+
+
+                newDiv.append(alertBtn).append(alertHeader).append(alertBody);
+                $(".alertBtn").append(newDiv);
             } else {
                 if (loginPwd == snapshot.val().password) {
                     // successful login
                     sessionStorage.setItem("userProfile", username2);
                     window.location.replace("portfolio.html");
                 } else {
-                    alert("Incorrect password");
+
+                    var newDiv = $("<div>");
+                    newDiv.addClass("alert alert-primary").attr("role", "alert");
+                    alertHeader = $("<h4>");
+                    alertHeader.addClass("alert-heading");
+                    alertHeader.text("Error");
+                    alertBody = $("<p>");
+                    alertBody.text("Incorrect password");
+                    var alertBtn = $("<button>");
+                    alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
+                    var span = $("<span>").attr("aria-hidden", "true").html("&times;");
+                    alertBtn.append(span);
+
+
+                    newDiv.append(alertBtn).append(alertHeader).append(alertBody);
+                    $(".alertBtn").append(newDiv);
                 }
             };
         });
@@ -134,9 +170,13 @@ $(document).ready(function () {
         $("#passwordInput2").val("");
     };
 
+    function signOut() {
+        sessionStorage.removeItem("userProfile");
+        window.location.replace("signup.html");
+    };
 
-    $("#signOut").on("click", function (event) {
-        // to be built in later stages
+    $(".signOut").on("click", function (event) {
+        signOut();
     });
 
     // parameters for AJAX queries
@@ -150,8 +190,11 @@ $(document).ready(function () {
     // second call is dependent on symbol values returned by the first call
     var loggedIn = sessionStorage.getItem("userProfile");
 
-    if (loggedIn != null) {
-        if (document.URL.includes("portfolio.html")) {
+    if (document.URL.includes("portfolio.html")) {
+        if (loggedIn != null) {
+            console.log("before setting new button")
+            $("#loginPageBtn").html("<a href='#' class='nav-link' id='signOut'>Sign Out of " + loggedIn + "</a>");
+            console.log("after setting new button")
             database.ref("/" + loggedIn + "/lastOnline").set(moment().format("x"));
             database.ref("/" + loggedIn).once("value").then(function (userSnap) {
                 portfolioPriceParams = Object.keys(userSnap.val().portfolio).join();
@@ -171,7 +214,6 @@ $(document).ready(function () {
                         if (userSnap.val().portfolio) {
                             for (var m = 0; m <= portfolioKeyArray.length - 1; m++) {
                                 console.log("this is the iteration")
-                                console.log(m)
                                 // technical variables
                                 console.log(m);
                                 var purchasedObj = portfolioKeyArray[m];
@@ -189,6 +231,7 @@ $(document).ready(function () {
                                 var coinAmount = $("<td>");
                                 var paidForCoin = $("<td>");
                                 var currentPortfolioPrice = $("<td>");
+
                                 coinName.append(purchasedObj);
                                 coinAmount.append(amountOwned);
                                 paidForCoin.append(paidPerCoin);
@@ -199,7 +242,7 @@ $(document).ready(function () {
                         } else {
                             var trow = $("<tr>");
                             trow.attr("class", "coinPftrow");
-                            var noCoin = $("<td>").attr("colspan", 4).html("<center>No coins in your portfolio. Go to <a href=\"index.html\">home page</a> to add coins</center>");
+                            var noCoin = $("<td>").attr("colspan", 4).html("<center>No coins in your portfolio. Go to <a href='index.html'>home page</a> to add coins</center>");
                             trow.html(noCoin);
                             $("#portfolio").html(trow);
                         }
@@ -219,12 +262,13 @@ $(document).ready(function () {
 
         }
     } else {
-        $("#userBalance").append("<a href='signup.html'>Login/Register</a>");
+        $("#userBalance").append("<a href='signup.html' id='loginReg'>Login/Register</a>");
         loggedIn = undefined;
     };
 
 
     if (document.URL.includes("index.html")) {
+        $("#loadingIcon").show()
         $.ajax({
             // get top 20 coins
             url: top20QueryURL,
@@ -244,6 +288,8 @@ $(document).ready(function () {
                 var pricesObj = pricesResponse.DISPLAY;
 
                 $("#lastRefreshTime").text(moment().format("M/D/YY HH:mm:ss"));
+
+                $("#loadingIcon").hide();
 
                 for (var i = 0; i <= Object.keys(pricesObj).length - 1; i++) {
 
@@ -339,42 +385,42 @@ $(document).ready(function () {
                                     var chartData = {
                                         labels: [],
                                         datasets: [{
-                                            label: "Daily Low",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(23, 162, 184, 1)"
-                                            ],
-                                            borderColor: [
-                                                "rgba(52, 58, 64, 1)" // black
-                                            ],
-                                            pointBackgroundColor: "rgba(140, 0, 0)",
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: "Closing Price at 00:00 GMT",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(255, 255, 255, 1)"
-                                            ],
-                                            borderColor: [
-                                                "rgba(23, 162, 184, 1)"
-                                            ],
-                                            pointBackgroundColor: "rgba(255, 0, 0, 1)",
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: "Daily High",
-                                            data: [],
-                                            backgroundColor: [
-                                                "rgba(52, 58, 64, 1)"
+                                                label: "Daily Low",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(23, 162, 184, 1)"
+                                                ],
+                                                borderColor: [
+                                                    "rgba(52, 58, 64, 1)" // black
+                                                ],
+                                                pointBackgroundColor: "rgba(140, 0, 0)",
+                                                borderWidth: 1
+                                            },
+                                            {
+                                                label: "Cg Price at 00:00 GMT",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(255, 255, 255, 1)"
+                                                ],
+                                                borderColor: [
+                                                    "rgba(23, 162, 184, 1)"
+                                                ],
+                                                pointBackgroundColor: "rgba(255, 0, 0, 1)",
+                                                borderWidth: 1
+                                            },
+                                            {
+                                                label: "Daily High",
+                                                data: [],
+                                                backgroundColor: [
+                                                    "rgba(52, 58, 64, 1)"
 
-                                            ],
-                                            borderColor: [
-                                                "rgba(255, 255, 255, 1)" // white
-                                            ],
-                                            pointBackgroundColor: "rgba(255, 160, 160, 1)",
-                                            borderWidth: 1
-                                        }
+                                                ],
+                                                borderColor: [
+                                                    "rgba(255, 255, 255, 1)" // white
+                                                ],
+                                                pointBackgroundColor: "rgba(255, 160, 160, 1)",
+                                                borderWidth: 1
+                                            }
                                         ]
                                     };
 
@@ -662,7 +708,22 @@ $(document).ready(function () {
                     howMuchInput.attr("placeholder", "Invalid Number");
                 }
             } else {
-                alert("You must first sign in to buy or sell any coins")
+
+                var newDiv = $("<div>");
+                newDiv.addClass("alert alert-primary").attr("role", "alert");
+                alertHeader = $("<h4>");
+                alertHeader.addClass("alert-heading");
+                alertHeader.text("Error");
+                alertBody = $("<p>");
+                alertBody.text("You must first sign in to buy or sell any coins");
+                var alertBtn = $("<button>");
+                alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
+                var span = $("<span>").attr("aria-hidden", "true").html("&times;");
+                alertBtn.append(span);
+
+
+                newDiv.append(alertBtn).append(alertHeader).append(alertBody);
+                $(".alertBtn").append(newDiv);
                 window.location.replace("signup.html");
             };
         });

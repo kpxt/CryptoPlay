@@ -26,13 +26,14 @@
                 <a class="navbar-brand logo" href="./index.html">
                     <img src="assets/images/cryptoplay.png">
                 </a>
+                <img src="assets/images/loadingGif.gif" alt="loading" id="loadingIcon">
             </div>
-            <div class="col-sm-6">
+            <!-- <div class="col-sm-6">
                 <form class="form-inline ">
                     <input class="form-control mr-sm-2 " id="search" type="search" placeholder="Look-up Coins..." aria-label="Search">
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
   	          </form>
-            </div>
+            </div> -->
             <div class="col-md-3 user">
                 <p class="text-light">
                     <strong>
@@ -55,14 +56,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="./portfolio.html">Portfolio</a>
                     </li>
-                    <li class="nav-item" id="loginPage">
+                    <li class="nav-item signOut" id="loginPageBtn">
                         <a class="nav-link" href="./signup.html">Log-in/Register</a>
-
                     </li>
                 </ul>
             </div>
         </nav>
         <br>
+        <div class="alertBtn"></div>
     </header>
     <main>
         <div class="container-fluid">
@@ -81,9 +82,9 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Symbol</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Market Cap</th>
+                                    <th scope="col" id="marketCap">Market Cap</th>
                                     <th scope="col">Current Price</th>
-                                    <th scope="col">Available Supply</th>
+                                    <th scope="col" id="availableSupply">Available Supply</th>
                                     <th scope="col">%24hr</th>
                                 </tr>
                             </thead>
@@ -97,10 +98,10 @@
                 <div class="card col-md-3 border-dark leaderboard">
                     <div class="card-header text-white bg-dark">LEADERBOARDS</div>
                     <div class="card-body container d-flex" id="leaderboardWrapper">
-                          <div class="card text-center bg-info LbBg">
+                        <div class="card text-center bg-info LbBg">
                             <div class="card-header leaderboardChart">
                                 <ul class="nav nav-tabs card-header-tabs" role="tablist">
-             	                   <li role="presentation" class="active">
+                                    <li role="presentation" class="active">
                                         <a class="nav-link active earningsOverTime" href="#topPortfoliosWrapper" aria-controls="1" role="tab" data-toggle="tab">
                                             <strong>Top Portfolios</strong>
                                         </a>
@@ -121,7 +122,7 @@
                                                 <th scope="col">User</th>
                                                 <th scope="col">Portfolio Value</th>
                                             </tr>
-         	                           </thead>
+                                        </thead>
                                         <tbody id="valueLB">
                                         </tbody>
                                     </table>

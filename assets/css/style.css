@@ -40,7 +40,7 @@ nav {
 .leaderboard {
     margin-top: 6em !important;
     margin: 1em;
-    height: 20em;
+    height: 29em;
 
 }
 
@@ -71,7 +71,13 @@ footer {
 .nav-link {
     color: black;
 }
-
+#loginReg {
+    color: #6c757d;
+}
+#loginReg:hover{
+    text-decoration: none;
+    color: #ffffff
+}
 .canvasWrapper {
     width: 550px !important;
 }
@@ -137,4 +143,12 @@ footer {
 }
 #leaderboardWrapper {
     overflow: scroll;
+}
+#loadingIcon {
+    width: 35px;
+    display: none;
+}
+.alertBtn {
+    position: fixed;
+    z-index: 2000;
 }
