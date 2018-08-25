@@ -541,7 +541,7 @@ $(document).ready(function () {
             var indexEarn = 0;
 
             for (var o = 0; o <= userArray.length - 1; o++) {
-                if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5) {
+                if (moment.duration(now - userbaseSnap.val()[userArray[o]].lastOnline).asDays() < 5 && indexPort <= 9) {
                     accountListPort.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                     var trowPort = $("<tr>").addClass("leaderboardRow portRow").attr("index", indexPort);
                     var usernameLBPort = $("<td>").addClass("portRowUser").attr("index", indexPort);
@@ -550,7 +550,7 @@ $(document).ready(function () {
                     $("#valueLB").append(trowPort);
                     indexPort++;
                 };
-                if (userbaseSnap.val()[userArray[o]].earnings > 0) {
+                if (userbaseSnap.val()[userArray[o]].earnings > 0 && indexEarn <= 9) {
                     accountListEarn.push([userArray[o], userbaseSnap.val()[userArray[o]]]);
                     var trowEarn = $("<tr>").addClass("leaderboardRow earnRow").attr("index", indexPort);
                     var usernameLBEarn = $("<td>").addClass("earnRowUser").attr("index", indexEarn);
