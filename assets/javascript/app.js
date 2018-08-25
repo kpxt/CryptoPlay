@@ -190,8 +190,8 @@ $(document).ready(function () {
     // second call is dependent on symbol values returned by the first call
     var loggedIn = sessionStorage.getItem("userProfile");
 
-    if (document.URL.includes("portfolio.html")) {
-        if (loggedIn != null) {
+    if (loggedIn != null) {
+        if (document.URL.includes("portfolio.html")) {
             console.log("before setting new button")
             $("#loginPageBtn").html("<a href='#' class='nav-link' id='signOut'>Sign Out of " + loggedIn + "</a>");
             console.log("after setting new button")
@@ -268,7 +268,7 @@ $(document).ready(function () {
 
 
     if (document.URL.includes("index.html")) {
-        $("#loadingIcon").show()
+        $("#loadingIcon").show();
         $.ajax({
             // get top 20 coins
             url: top20QueryURL,
@@ -651,6 +651,7 @@ $(document).ready(function () {
                                 }, 5 * 1000);
                             };
                         });
+
                     } else if ($(this).hasClass("sell")) {
                         console.log(howMuchInput.val())
                         userRef.once("value").then(function (snap) {
