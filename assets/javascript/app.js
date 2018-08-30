@@ -58,31 +58,52 @@ $(document).ready(function () {
 
 
         //push to firebase
-        if (pwd == cfmPwd) {
-            var userRef = database.ref("/" + username);
-            console.log(userRef);
-            database.ref("/" + username + "/email").set(email);
-            database.ref("/" + username + "/balance").set(10000);
-            database.ref("/" + username + "/password").set(pwd);
-            database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
-            database.ref("/" + username + "/portfolio").set(false);
-            database.ref("/" + username + "/earnings").set(0);
-            database.ref("/" + username + "/portfolioValue").set(0);
-            $.ajax({
-                url: "https://api.ipify.org",
-                method: "GET"
-            }).then(function (IpResponse) {
-                console.log(IpResponse);
-                var flagQuery = "http://api.ipstack.com/" + IpResponse + "?access_key=90919045154960d57d9a14b03c55a689";
+        if (username && email && pwd) {
+            if (pwd == cfmPwd) {
+                var userRef = database.ref("/" + username);
+                console.log(userRef);
+                database.ref("/" + username + "/email").set(email);
+                database.ref("/" + username + "/balance").set(10000);
+                database.ref("/" + username + "/password").set(pwd);
+                database.ref("/" + username + "/accountBday").set(firebase.database.ServerValue.TIMESTAMP);
+                database.ref("/" + username + "/portfolio").set(false);
+                database.ref("/" + username + "/earnings").set(0);
+                database.ref("/" + username + "/portfolioValue").set(0);
                 $.ajax({
-                    url: flagQuery,
+                    url: "https://api.ipify.org",
                     method: "GET"
-                }).then(function (flagResponse) {
-                    database.ref("/" + username + "/countryFlag").set(flagResponse.location.country_flag_emoji);
-                    sessionStorage.setItem("userProfile", username);
-                    window.location.replace("portfolio.html");
+                }).then(function (IpResponse) {
+                    console.log(IpResponse);
+                    var flagQuery = "http://api.ipstack.com/" + IpResponse + "?access_key=90919045154960d57d9a14b03c55a689";
+                    $.ajax({
+                        url: flagQuery,
+                        method: "GET"
+                    }).then(function (flagResponse) {
+                        database.ref("/" + username + "/countryFlag").set(flagResponse.location.country_flag_emoji);
+                        sessionStorage.setItem("userProfile", username);
+                        window.location = "portfolio.html";
+                        console.log("this is the end result of signup")
+                    });
                 });
-            });
+
+            } else {
+                //alert("Passwords do not match");
+                var newDiv = $("<div>");
+                newDiv.addClass("alert alert-primary").attr("role", "alert");
+                alertHeader = $("<h4>");
+                alertHeader.addClass("alert-heading");
+                alertHeader.text("Error");
+                alertBody = $("<p>");
+                alertBody.text("Passwords do not match");
+                var alertBtn = $("<button>");
+                alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
+                var span = $("<span>").attr("aria-hidden", "true").html("&times;");
+                alertBtn.append(span);
+
+
+                newDiv.append(alertBtn).append(alertHeader).append(alertBody);
+                $(".alertBtn").append(newDiv);
+            };
         } else {
             //alert("Passwords do not match");
             var newDiv = $("<div>");
@@ -91,12 +112,11 @@ $(document).ready(function () {
             alertHeader.addClass("alert-heading");
             alertHeader.text("Error");
             alertBody = $("<p>");
-            alertBody.text("Passwords do not match");
+            alertBody.text("Please fill in all information");
             var alertBtn = $("<button>");
             alertBtn.addClass("close").attr("data-dismiss", "alert").attr("aria-label", "close");
             var span = $("<span>").attr("aria-hidden", "true").html("&times;");
             alertBtn.append(span);
-
 
             newDiv.append(alertBtn).append(alertHeader).append(alertBody);
             $(".alertBtn").append(newDiv);
